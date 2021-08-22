@@ -8,6 +8,7 @@
  */
 package lahtinen.games.retro_crawl.gui
 
+import lahtinen.games.retro_crawl.CharacterAttributes
 import lahtinen.games.retro_crawl.GameState
 import lahtinen.games.retro_crawl.LevelController
 import lahtinen.games.retro_crawl.LevelController.Direction
@@ -23,13 +24,20 @@ class RetroCrawlFrame : JFrame() {
 
     init {
         val mainFrame = MainFrame()
-        val dialog = CharacterDialog(this)
-        val player = Player(dialog.characterAttributes)
+        val characterAttributes = CharacterAttributes.newCharacter()
+        val dialog = CharacterDialog(this, characterAttributes)
+        dialog.isVisible = true
+        val player = Player(characterAttributes)
         val gameState = GameState(player, 1, State.MAP)
         val eventController = EventController(gameState)
         val levelController = LevelController(gameState, mainFrame.mapView)
         setupKeyListeners(gameState, levelController, eventController)
         printStoryLog()
+
+        // TODO
+        val fightPanel = FightPanel()
+        val inventoryPanel = InventoryPanel(player.inventory)
+        mainFrame.setInteractionView(inventoryPanel)
     }
 
     private val moveKeys = listOf(

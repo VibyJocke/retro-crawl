@@ -2,20 +2,24 @@ package lahtinen.games.retro_crawl.gui
 
 import lahtinen.games.retro_crawl.CharacterAttributes
 import java.awt.BorderLayout
-import java.awt.Font
 import java.awt.GridBagConstraints
 import java.awt.GridBagLayout
 import java.awt.event.ActionEvent
-import javax.swing.*
+import javax.swing.AbstractAction
+import javax.swing.JButton
+import javax.swing.JDialog
+import javax.swing.JFrame
+import javax.swing.JLabel
+import javax.swing.JPanel
+import javax.swing.JTextField
 import javax.swing.border.EmptyBorder
 
-class CharacterDialog(owner: JFrame?) : JDialog(owner, true) {
-    var characterAttributes = CharacterAttributes.NEW_CHARACTER
-    private val name: JTextField = JTextField()
-    private val health: StatField = StatField(this, "Vitality")
-    private val strength: StatField = StatField(this, "Strength")
-    private val speed: StatField = StatField(this, "Agility")
-    private val pointsLeft = JLabel("10")
+class CharacterDialog(owner: JFrame, val newCharacter: CharacterAttributes) : JDialog(owner, true) {
+    private val name: JTextField = JTextField(newCharacter.name)
+    private val health: StatField = StatField(this, "Vitality", newCharacter.maxHealth)
+    private val strength: StatField = StatField(this, "Strength", newCharacter.strength)
+    private val speed: StatField = StatField(this, "Agility", newCharacter.speed)
+    private val pointsLeft = JLabel("0")
 
     init {
         setSize(300, 225)
@@ -26,12 +30,11 @@ class CharacterDialog(owner: JFrame?) : JDialog(owner, true) {
         val mainPanel = JPanel(BorderLayout())
         mainPanel.border = EmptyBorder(10, 10, 10, 10)
         val title = JLabel("Character creation")
-        title.font = Font("verdana", Font.BOLD, 16)
+        title.font = GuiConstants.FONT
         mainPanel.add(title, BorderLayout.NORTH)
         mainPanel.add(getFields(), BorderLayout.CENTER)
         mainPanel.add(getButtons(), BorderLayout.SOUTH)
         contentPane.add(mainPanel)
-        isVisible = true
     }
 
     private fun getFields(): JPanel {
@@ -68,13 +71,11 @@ class CharacterDialog(owner: JFrame?) : JDialog(owner, true) {
         val panel = JPanel(BorderLayout())
         val okButton = JButton(object : AbstractAction("Done!") {
             override fun actionPerformed(e: ActionEvent) {
-                if (!name.text.isEmpty() && pointsLeft.text.equals("0", ignoreCase = true)) {
-                    characterAttributes = CharacterAttributes(
-                        name.text,
-                        health.getValue(),
-                        strength.getValue(),
-                        speed.getValue()
-                    )
+                if (name.text.isNotBlank() && getPointsLeft() == 0) {
+                    newCharacter.name = name.text
+                    newCharacter.maxHealth = health.getValue()
+                    newCharacter.strength = strength.getValue()
+                    newCharacter.speed = speed.getValue()
                     dispose()
                 }
             }

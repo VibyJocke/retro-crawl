@@ -11,15 +11,8 @@ import javax.swing.*
 class MainFrame : JFrame() {
     private val log: Logger = Logger.getAnonymousLogger()
     private var inventoryComponent: JList<InventoryManaged>? = null
-    private val actionLogComponent: JTextArea? = null
-    var mapView: MapView? = null
-        get() {
-            if (field == null) {
-                field = MapView()
-            }
-            return field
-        }
-        private set
+    private val interactionViewHolder = JPanel()
+    val mapView = MapView()
 
     init {
         initFrame()
@@ -48,13 +41,13 @@ class MainFrame : JFrame() {
     private fun initGui() {
         contentPane.layout = BorderLayout()
         val leftGroup = JPanel(BorderLayout())
-        leftGroup.add(getInventoryComponent(), BorderLayout.NORTH)
-        val logScrollPane = ScrollPane()
+        leftGroup.add(interactionViewHolder, BorderLayout.NORTH)
+        val logScrollPane = ScrollPane(ScrollPane.SCROLLBARS_ALWAYS)
         logScrollPane.add(ActionLogTextArea())
         logScrollPane.preferredSize = Dimension(0, 300)
         leftGroup.add(logScrollPane, BorderLayout.SOUTH)
         val rightGroup = JPanel(BorderLayout())
-        rightGroup.add(mapView!!, BorderLayout.CENTER)
+        rightGroup.add(mapView, BorderLayout.CENTER)
         val splitPane = JSplitPane()
         splitPane.leftComponent = leftGroup
         splitPane.rightComponent = rightGroup
@@ -63,12 +56,9 @@ class MainFrame : JFrame() {
         add(splitPane, BorderLayout.CENTER)
     }
 
-    private fun getInventoryComponent(): JList<InventoryManaged> {
-        if (inventoryComponent == null) {
-            inventoryComponent = JList()
-            inventoryComponent!!.border =
-                BorderFactory.createTitledBorder(null, "Inventory")
-        }
-        return inventoryComponent!!
+    // Use to switch between e.g. inventory and fight view
+    fun setInteractionView(panel: JPanel) {
+        interactionViewHolder.removeAll()
+        interactionViewHolder.add(panel)
     }
 }

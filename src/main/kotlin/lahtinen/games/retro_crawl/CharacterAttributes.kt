@@ -1,7 +1,7 @@
 package lahtinen.games.retro_crawl
 
 class CharacterAttributes(
-    private val name: String,
+    var name: String,
     var maxHealth: Int,
     var strength: Int,
     var speed: Int
@@ -19,6 +19,8 @@ class CharacterAttributes(
     }
 
     companion object {
-        var NEW_CHARACTER = CharacterAttributes("Mr. Guy", 5, 3, 2)
+        fun newCharacter(): CharacterAttributes {
+            return CharacterAttributes("Joe Dohn", 5, 3, 2)
+        }
     }
 }

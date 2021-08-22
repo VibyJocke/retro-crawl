@@ -1,6 +1,8 @@
 package lahtinen.games.retro_crawl.controller
 
-import lahtinen.games.retro_crawl.*
+import lahtinen.games.retro_crawl.GameState
+import lahtinen.games.retro_crawl.Health
+import lahtinen.games.retro_crawl.State
 import lahtinen.games.retro_crawl.monster.Monster
 import lahtinen.games.retro_crawl.monster.MonsterFactory
 

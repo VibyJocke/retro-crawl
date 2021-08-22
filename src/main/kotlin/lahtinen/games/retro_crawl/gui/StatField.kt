@@ -9,14 +9,15 @@ import javax.swing.JButton
 import javax.swing.JLabel
 import javax.swing.JPanel
 
-class StatField(private val charDialog: CharacterDialog, text: String?) : JPanel() {
+class StatField(private val charDialog: CharacterDialog, text: String?, startValue: Int) :
+    JPanel() {
     private val label: JLabel
     private val value: JLabel
 
     init {
         layout = BorderLayout()
         label = JLabel(text)
-        value = JLabel("0")
+        value = JLabel(startValue.toString())
         val dataPanel = JPanel(FlowLayout())
         dataPanel.add(value)
         dataPanel.add(getAddButton())
