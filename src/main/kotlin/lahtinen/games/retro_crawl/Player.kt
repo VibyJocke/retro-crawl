@@ -12,7 +12,9 @@ class Player(val characterAttributes: CharacterAttributes) {
     private var protection = 0
     private var equipped_weapon = Weapon.FISTS
     private val equipped_armor = mutableListOf<Armor>()
-    private var inventory = mutableListOf<Any>()
+
+    val inventory = Inventory(characterAttributes.strength * 2)
+
     //TODO add tick system for temporary effects
 
     fun givenDamage(): Int = characterAttributes.strength * equipped_weapon.base_damage
