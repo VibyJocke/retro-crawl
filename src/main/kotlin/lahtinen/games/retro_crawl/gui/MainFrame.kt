@@ -1,6 +1,5 @@
 package lahtinen.games.retro_crawl.gui
 
-import lahtinen.games.retro_crawl.item.InventoryManaged
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.ScrollPane
@@ -10,7 +9,6 @@ import javax.swing.*
 
 class MainFrame : JFrame() {
     private val log: Logger = Logger.getAnonymousLogger()
-    private var inventoryComponent: JList<InventoryManaged>? = null
     private val interactionViewHolder = JPanel()
     val mapView = MapView()
 
@@ -40,14 +38,18 @@ class MainFrame : JFrame() {
 
     private fun initGui() {
         contentPane.layout = BorderLayout()
+
         val leftGroup = JPanel(BorderLayout())
+        interactionViewHolder.preferredSize = Dimension(0, 300) // TODO make this dynamic
         leftGroup.add(interactionViewHolder, BorderLayout.NORTH)
         val logScrollPane = ScrollPane(ScrollPane.SCROLLBARS_ALWAYS)
         logScrollPane.add(ActionLogTextArea())
         logScrollPane.preferredSize = Dimension(0, 300)
         leftGroup.add(logScrollPane, BorderLayout.SOUTH)
+
         val rightGroup = JPanel(BorderLayout())
         rightGroup.add(mapView, BorderLayout.CENTER)
+
         val splitPane = JSplitPane()
         splitPane.leftComponent = leftGroup
         splitPane.rightComponent = rightGroup

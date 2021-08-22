@@ -16,6 +16,7 @@ import lahtinen.games.retro_crawl.Player
 import lahtinen.games.retro_crawl.State
 import lahtinen.games.retro_crawl.controller.ActionLogController
 import lahtinen.games.retro_crawl.controller.EventController
+import lahtinen.games.retro_crawl.monster.Monster
 import java.awt.KeyboardFocusManager
 import java.awt.event.KeyEvent
 import javax.swing.JFrame
@@ -34,10 +35,11 @@ class RetroCrawlFrame : JFrame() {
         setupKeyListeners(gameState, levelController, eventController)
         printStoryLog()
 
-        // TODO
-        val fightPanel = FightPanel()
+        // TODO: Implement controller-driven views
+        val fightPanel = FightPanel(Monster.BIRD)
         val inventoryPanel = InventoryPanel(player.inventory)
-        mainFrame.setInteractionView(inventoryPanel)
+        mainFrame.setInteractionView(fightPanel)
+        pack()
     }
 
     private val moveKeys = listOf(
