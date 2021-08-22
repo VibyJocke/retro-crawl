@@ -1,27 +1,21 @@
 package lahtinen.games.retro_crawl.gui
 
 import java.awt.BorderLayout
-import java.awt.Font
 import java.awt.event.ActionEvent
-import javax.swing.*
+import javax.swing.AbstractAction
+import javax.swing.JButton
+import javax.swing.JLabel
+import javax.swing.JPanel
 import javax.swing.border.EmptyBorder
 
-
-class FightDialog(owner: JFrame?) : JDialog(owner, true) {
+class FightPanel : JPanel(BorderLayout()) {
 
     init {
-        setSize(300, 225)
-        isResizable = false
-        setLocationRelativeTo(owner)
-        title = "You are fighting!"
-        layout = BorderLayout()
-        val mainPanel = JPanel(BorderLayout())
-        mainPanel.border = EmptyBorder(10, 10, 10, 10)
-        val title = JLabel("Character creation")
-        title.font = Font("verdana", Font.BOLD, 16)
-        mainPanel.add(title, BorderLayout.NORTH)
-        mainPanel.add(getButtons(), BorderLayout.SOUTH)
-        contentPane.add(mainPanel)
+        border = EmptyBorder(10, 10, 10, 10)
+        val title = JLabel("Fight!")
+        title.font = GuiConstants.FONT
+        add(title, BorderLayout.NORTH)
+        add(getButtons(), BorderLayout.SOUTH)
         isVisible = true
     }
 
@@ -29,12 +23,12 @@ class FightDialog(owner: JFrame?) : JDialog(owner, true) {
         val panel = JPanel(BorderLayout())
         val fightButton = JButton(object : AbstractAction("Done!") {
             override fun actionPerformed(e: ActionEvent) {
-                dispose()
+                // TODO
             }
         })
         val fleeButton = JButton(object : AbstractAction("Done!") {
             override fun actionPerformed(e: ActionEvent) {
-                dispose()
+                // TODO
             }
         })
         panel.add(fightButton, BorderLayout.EAST)
