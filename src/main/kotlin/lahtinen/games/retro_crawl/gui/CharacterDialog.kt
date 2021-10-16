@@ -30,7 +30,7 @@ class CharacterDialog(owner: JFrame, val newCharacter: CharacterAttributes) : JD
         val mainPanel = JPanel(BorderLayout())
         mainPanel.border = EmptyBorder(10, 10, 10, 10)
         val title = JLabel("Character creation")
-        title.font = GuiConstants.FONT
+        title.font = GuiConstants.TITLE_FONT
         mainPanel.add(title, BorderLayout.NORTH)
         mainPanel.add(getFields(), BorderLayout.CENTER)
         mainPanel.add(getButtons(), BorderLayout.SOUTH)

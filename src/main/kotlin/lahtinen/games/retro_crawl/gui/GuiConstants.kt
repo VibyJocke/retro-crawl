@@ -4,6 +4,6 @@ import java.awt.Font
 
 class GuiConstants {
     companion object {
-        val FONT = Font("verdana", Font.BOLD, 16)
+        val TITLE_FONT = Font("verdana", Font.BOLD, 16)
     }
 }

@@ -5,7 +5,10 @@ import java.awt.Dimension
 import java.awt.ScrollPane
 import java.awt.Toolkit
 import java.util.logging.Logger
-import javax.swing.*
+import javax.swing.JFrame
+import javax.swing.JPanel
+import javax.swing.JSplitPane
+import javax.swing.UIManager
 
 class MainFrame : JFrame() {
     private val log: Logger = Logger.getAnonymousLogger()
@@ -40,8 +43,7 @@ class MainFrame : JFrame() {
         contentPane.layout = BorderLayout()
 
         val leftGroup = JPanel(BorderLayout())
-        interactionViewHolder.preferredSize = Dimension(0, 300) // TODO make this dynamic
-        leftGroup.add(interactionViewHolder, BorderLayout.NORTH)
+        leftGroup.add(interactionViewHolder, BorderLayout.CENTER)
         val logScrollPane = ScrollPane(ScrollPane.SCROLLBARS_ALWAYS)
         logScrollPane.add(ActionLogTextArea())
         logScrollPane.preferredSize = Dimension(0, 300)

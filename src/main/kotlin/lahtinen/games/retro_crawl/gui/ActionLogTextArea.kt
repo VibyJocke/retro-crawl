@@ -10,6 +10,7 @@ class ActionLogTextArea : JTextArea() {
         wrapStyleWord = true
         columns = 30
         rows = 10
+
         ActionLogController.INSTANCE.setActionLogTextArea(this)
     }
 }
