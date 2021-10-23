@@ -25,9 +25,7 @@ class ActionLogTextArea : JTextArea() {
     }
 
     @Subscribe
-    fun onLog(event: StoryExposition) {
-        log(event.text)
-    }
+    fun onLog(event: StoryExposition) = log(event.text)
 
     @Subscribe
     fun onLog(event: PlayerHit) {
@@ -42,24 +40,17 @@ class ActionLogTextArea : JTextArea() {
     }
 
     @Subscribe
-    fun onLog(event: MonsterEncountered) {
-        log("A wild ${event.monster.name} appears!")
-    }
+    fun onLog(event: MonsterEncountered) = log("A wild ${event.monster.name} appears!")
 
     @Subscribe
-    fun onLog(event: PlayerEscaped) {
+    fun onLog(event: PlayerEscaped) =
         if (event.successful) log("You escaped successfully!") else log("You failed to escape!")
-    }
 
     @Subscribe
-    fun onLog(event: MonsterDied) {
-        log("You killed the ${event.monster.name}!")
-    }
+    fun onLog(event: MonsterDied) = log("You killed the ${event.monster.name}!")
 
     @Subscribe
-    fun onLog(event: PlayerDied) {
-        log("You died...")
-    }
+    fun onLog(event: PlayerDied) = log("You died...")
 
     private fun log(text: String) {
         SwingUtilities.invokeLater {

@@ -64,5 +64,6 @@ class MainFrame : JFrame() {
     fun setInteractionView(panel: JPanel) {
         interactionViewHolder.removeAll()
         interactionViewHolder.add(panel)
+        repaint()
     }
 }

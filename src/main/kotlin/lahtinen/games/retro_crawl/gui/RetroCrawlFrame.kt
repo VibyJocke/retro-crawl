@@ -15,18 +15,23 @@ import lahtinen.games.retro_crawl.LevelController.Direction
 import lahtinen.games.retro_crawl.Player
 import lahtinen.games.retro_crawl.State
 import lahtinen.games.retro_crawl.controller.EventController
+import lahtinen.games.retro_crawl.events.MonsterDied
+import lahtinen.games.retro_crawl.events.MonsterEncountered
+import lahtinen.games.retro_crawl.events.PlayerEscaped
 import lahtinen.games.retro_crawl.events.StoryExposition
-import lahtinen.games.retro_crawl.monster.Monster
 import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.awt.KeyboardFocusManager
 import java.awt.event.KeyEvent
 import javax.swing.JFrame
+import javax.swing.JPanel
 
 class RetroCrawlFrame : JFrame() {
     private val eventBus = EventBus.getDefault()
+    private val mainFrame = MainFrame()
+    private val fightPanel = FightPanel()
 
     init {
-        val mainFrame = MainFrame()
         val characterAttributes = CharacterAttributes.newCharacter()
         CharacterDialog(this, characterAttributes).isVisible = true
         val player = Player(characterAttributes)
@@ -35,12 +40,8 @@ class RetroCrawlFrame : JFrame() {
         val levelController = LevelController(gameState)
         setupKeyListeners(gameState, levelController, eventController)
         printStoryLog()
-
-        // TODO: Implement controller-driven views
-        val fightPanel = FightPanel(Monster.BIRD)
-        val inventoryPanel = InventoryPanel(player.inventory)
-        mainFrame.setInteractionView(fightPanel)
         pack()
+        eventBus.register(this)
     }
 
     private val moveKeys = listOf(
@@ -89,6 +90,17 @@ class RetroCrawlFrame : JFrame() {
                 }
                 false
             }
+    }
+
+    @Subscribe
+    fun onMonsterEncountered(event: MonsterEncountered) = mainFrame.setInteractionView(fightPanel)
+
+    @Subscribe
+    fun onMonsterDied(event: MonsterDied) = mainFrame.setInteractionView(JPanel())
+
+    @Subscribe
+    fun onPlayerEscaped(event: PlayerEscaped) {
+        if (event.successful) mainFrame.setInteractionView(JPanel())
     }
 
     private fun printStoryLog() {

@@ -12,7 +12,7 @@ enum class Monster(
     BIRD(
         "Bird",
         "A nasty bird",
-        2,
+        3,
         1,
         7,
         10
@@ -20,7 +20,7 @@ enum class Monster(
     SNAKE(
         "Snake",
         "A fierce snake",
-        2,
+        3,
         2,
         4,
         20

@@ -6,6 +6,7 @@ import lahtinen.games.retro_crawl.State
 import lahtinen.games.retro_crawl.events.MonsterDied
 import lahtinen.games.retro_crawl.events.MonsterEncountered
 import lahtinen.games.retro_crawl.events.MonsterHit
+import lahtinen.games.retro_crawl.events.PlayerDied
 import lahtinen.games.retro_crawl.events.PlayerHit
 import lahtinen.games.retro_crawl.monster.Monster
 import lahtinen.games.retro_crawl.monster.MonsterFactory
@@ -34,9 +35,9 @@ class FightController(private val gameState: GameState) {
             }
 
             val playerReceivedDamage = gameState.player.hurtCombat(currentMonster!!.baseDamage)
-            eventbus.post(PlayerHit(playerGivenDamage))
+            eventbus.post(PlayerHit(playerReceivedDamage))
             if (gameState.player.isDead()) {
-                eventbus.post(MonsterDied(currentMonster!!))
+                eventbus.post(PlayerDied())
                 gameState.state = State.DEAD
                 return
             }
