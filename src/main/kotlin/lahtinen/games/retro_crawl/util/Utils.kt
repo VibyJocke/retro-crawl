@@ -4,4 +4,6 @@ import java.util.Random
 
 object Utils {
     val RANDOM = Random()
+
+    fun roll(chance: Double) = chance >= RANDOM.nextDouble()
 }

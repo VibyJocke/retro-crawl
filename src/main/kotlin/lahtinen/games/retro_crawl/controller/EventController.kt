@@ -6,6 +6,8 @@ import lahtinen.games.retro_crawl.util.Utils
 
 // TODO: Is this class even needed or should it just move up?
 class EventController(private val gameState: GameState) {
+    private val monsterEncounterChance = 0.1
+    private val itemDropChance = 0.1
     private val fightController = FightController(gameState)
     private val itemDropController = ItemDropController()
 
@@ -32,18 +34,20 @@ class EventController(private val gameState: GameState) {
     }
 
     private fun rollOnSpeedAttribute() =
-        Utils.RANDOM.nextInt(10) <
-                gameState.player.characterAttributes.speed + minOf(1, (5 - gameState.level))
+        Utils.roll(
+            (gameState.player.characterAttributes.speed + minOf(1, (5 - gameState.level))
+                    ) / 10.0
+        )
 
     private fun fightMonster() {
-        if (Utils.RANDOM.nextInt(10) == 1) {
+        if (Utils.roll(monsterEncounterChance)) {
             gameState.state = State.FIGHT
             fightController.fight()
         }
     }
 
     private fun dropItem() {
-        if (Utils.RANDOM.nextInt(15) == 1) {
+        if (Utils.roll(itemDropChance)) {
             itemDropController.drop()
         }
     }
