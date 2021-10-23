@@ -19,8 +19,6 @@ class CharacterAttributes(
     }
 
     companion object {
-        fun newCharacter(): CharacterAttributes {
-            return CharacterAttributes("Joe Dohn", 5, 3, 2)
-        }
+        fun newCharacter() = CharacterAttributes("Joe Dohn", 5, 3, 2)
     }
 }

@@ -5,10 +5,12 @@ import java.awt.Color
 import java.awt.Graphics
 import java.awt.image.BufferedImage
 import java.util.*
+import java.util.logging.Logger
 import javax.swing.JPanel
 import kotlin.math.min
 
 class MapView : JPanel(), Observer {
+    private val log: Logger = Logger.getLogger(javaClass.name)
     private var levelImage: BufferedImage? = null
     private var playerPosition: SimplePoint? = null
     private lateinit var playerTraversedMatrix: Array<BooleanArray>
@@ -28,8 +30,8 @@ class MapView : JPanel(), Observer {
                 canvasImage,
                 5,
                 10,
-                squareSize - 10,
-                squareSize - 15,
+                min(width, height) - 10,
+                min(width, height) - 15,
                 null
             )
         }
@@ -42,65 +44,52 @@ class MapView : JPanel(), Observer {
 
     private fun drawFogOfWar(g: Graphics) {
         updatePlayerTraversedMatrix()
-        drawFog(g, updatedFogOfWarMatrix)
+        drawFog(g, updatedFogOfWarMatrix())
     }
 
     private fun updatePlayerTraversedMatrix() {
         playerTraversedMatrix[playerPosition!!.x][playerPosition!!.y] = true
     }
 
-    private val updatedFogOfWarMatrix: Array<BooleanArray>
-        get() {
-            val fogOfWarMatrix = initiateBooleanMatrix(levelImage)
-            var x = 0
-            for (row in playerTraversedMatrix) {
-                var y = 0
-                for (rowPixel in row) {
-                    if (rowPixel) {
-                        fogOfWarMatrix[x][y] = true
-                        fogOfWarMatrix[x + 1][y + 1] = true
-                        fogOfWarMatrix[x - 1][y - 1] = true
-                        fogOfWarMatrix[x - 1][y + 1] = true
-                        fogOfWarMatrix[x + 1][y - 1] = true
-                        fogOfWarMatrix[x + 1][y] = true
-                        fogOfWarMatrix[x - 1][y] = true
-                        fogOfWarMatrix[x][y + 1] = true
-                        fogOfWarMatrix[x][y - 1] = true
-                    }
-                    y++
-                }
-                x++
-            }
-            return fogOfWarMatrix
-        }
-
     private fun drawFog(g: Graphics, fogOfWarMatrix: Array<BooleanArray>) {
-        var x = 0
-        for (row in fogOfWarMatrix) {
-            var y = 0
-            for (rowPixel in row) {
-                if (!rowPixel) {
+        fogOfWarMatrix.forEachIndexed { x, row ->
+            row.forEachIndexed { y, column ->
+                if (!column) {
                     g.color = Color.BLACK
                     g.drawRect(x, y, 0, 0)
                 }
-                y++
             }
-            x++
         }
     }
 
+    private fun updatedFogOfWarMatrix(): Array<BooleanArray> {
+        val fogOfWarMatrix = initiateBooleanMatrix(levelImage)
+        playerTraversedMatrix.forEachIndexed { x, row ->
+            row.forEachIndexed { y, column ->
+                if (column) {
+                    fogOfWarMatrix[x][y] = true
+                    fogOfWarMatrix[x + 1][y + 1] = true
+                    fogOfWarMatrix[x - 1][y - 1] = true
+                    fogOfWarMatrix[x - 1][y + 1] = true
+                    fogOfWarMatrix[x + 1][y - 1] = true
+                    fogOfWarMatrix[x + 1][y] = true
+                    fogOfWarMatrix[x - 1][y] = true
+                    fogOfWarMatrix[x][y + 1] = true
+                    fogOfWarMatrix[x][y - 1] = true
+                }
+            }
+        }
+        return fogOfWarMatrix
+    }
+
     private fun deepCopy(bi: BufferedImage): BufferedImage {
-        val cm = bi.colorModel
         return BufferedImage(
-            cm,
+            bi.colorModel,
             bi.copyData(null),
-            cm.isAlphaPremultiplied,
+            bi.colorModel.isAlphaPremultiplied,
             null
         )
     }
-
-    private val squareSize: Int
-        get() = min(width, height)
 
     override fun update(o: Observable, mapUpdateData: Any) {
         when (mapUpdateData) {
@@ -109,18 +98,14 @@ class MapView : JPanel(), Observer {
                 playerTraversedMatrix = initiateBooleanMatrix(levelImage)
             }
             is SimplePoint -> playerPosition = mapUpdateData
-            else -> throw IllegalArgumentException("Update of unknown type!")
+            else -> log.severe("Player reached level transition")
         }
         this.repaint()
     }
 
     private fun initiateBooleanMatrix(levelImage: BufferedImage?): Array<BooleanArray> {
-        val matrix = Array(
-            levelImage!!.height
-        ) { BooleanArray(levelImage.width) }
-        for (row in matrix) {
-            Arrays.fill(row, false)
-        }
+        val matrix = Array(levelImage!!.height) { BooleanArray(levelImage.width) }
+        matrix.forEach { row -> Arrays.fill(row, false) }
         return matrix
     }
 }

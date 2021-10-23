@@ -43,11 +43,7 @@ class RetroCrawlFrame : JFrame() {
     }
 
     private val moveKeys = listOf(
-        KeyEvent.VK_LEFT,
-        KeyEvent.VK_RIGHT,
-        KeyEvent.VK_UP,
-        KeyEvent.VK_DOWN,
-        KeyEvent.VK_SPACE
+        KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_SPACE
     )
 
     private fun setupKeyListeners(
@@ -96,13 +92,8 @@ class RetroCrawlFrame : JFrame() {
 
     private fun printStoryLog() {
         ActionLogController.INSTANCE.log(
-            "You stand before a great mountain. At the foot of the mountain "
-                    + "you see a cave entrance. You carefully approach the cave and enter."
-        )
-        ActionLogController.INSTANCE.log(
-            "You have entered the cave. The air is heavy and damp. "
-                    + "The darkness swallows you. You instantly regret that you entered and turn around to leave but "
-                    + "all you see is a solid rock wall. It's too late to go back."
+            """You stand before a great mountain. At the foot of the mountain you see a cave entrance. You carefully approach the cave and enter. 
+The air is heavy and damp. The darkness swallows you. You instantly regret that you entered and turn around to leave but all you see is a solid rock wall. It's too late to go back."""
         )
     }
 }
