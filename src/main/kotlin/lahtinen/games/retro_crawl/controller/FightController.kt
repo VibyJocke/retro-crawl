@@ -3,10 +3,16 @@ package lahtinen.games.retro_crawl.controller
 import lahtinen.games.retro_crawl.GameState
 import lahtinen.games.retro_crawl.Health
 import lahtinen.games.retro_crawl.State
+import lahtinen.games.retro_crawl.events.MonsterDied
+import lahtinen.games.retro_crawl.events.MonsterEncountered
+import lahtinen.games.retro_crawl.events.MonsterHit
+import lahtinen.games.retro_crawl.events.PlayerHit
 import lahtinen.games.retro_crawl.monster.Monster
 import lahtinen.games.retro_crawl.monster.MonsterFactory
+import org.greenrobot.eventbus.EventBus
 
 class FightController(private val gameState: GameState) {
+    private val eventbus = EventBus.getDefault()
     private val monsterFactory = MonsterFactory()
     private var currentMonster: Monster? = null
     private var currentMonsterHealth: Health? = null
@@ -15,24 +21,22 @@ class FightController(private val gameState: GameState) {
         if (currentMonster == null) {
             currentMonster = monsterFactory.createRandomMonster(gameState.level)
             currentMonsterHealth = Health(currentMonster!!.baseHealth)
-            ActionLogController.INSTANCE.log("A wild ${currentMonster!!.name} appears!")
+            eventbus.post(MonsterEncountered(currentMonster!!))
         } else {
-            ActionLogController.INSTANCE.log("SMACK!")
             val playerGivenDamage = gameState.player.givenDamage()
             currentMonsterHealth!!.drainHealth(playerGivenDamage)
-            ActionLogController.INSTANCE.log("You hit for $playerGivenDamage damage.")
+            eventbus.post(MonsterHit(playerGivenDamage, currentMonster!!))
             if (currentMonsterHealth!!.dead()) {
-                ActionLogController.INSTANCE.log("You killed the ${currentMonster!!.name}!")
+                eventbus.post(MonsterDied(currentMonster!!))
                 gameState.state = State.MAP
                 resetMonster()
                 return
             }
 
-            ActionLogController.INSTANCE.log("KAPOW!")
             val playerReceivedDamage = gameState.player.hurtCombat(currentMonster!!.baseDamage)
-            ActionLogController.INSTANCE.log("You got hit for $playerReceivedDamage damage.")
+            eventbus.post(PlayerHit(playerGivenDamage))
             if (gameState.player.isDead()) {
-                ActionLogController.INSTANCE.log("You died...")
+                eventbus.post(MonsterDied(currentMonster!!))
                 gameState.state = State.DEAD
                 return
             }

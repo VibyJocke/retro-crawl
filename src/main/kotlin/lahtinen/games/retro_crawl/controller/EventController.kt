@@ -2,10 +2,13 @@ package lahtinen.games.retro_crawl.controller
 
 import lahtinen.games.retro_crawl.GameState
 import lahtinen.games.retro_crawl.State
+import lahtinen.games.retro_crawl.events.PlayerEscaped
 import lahtinen.games.retro_crawl.util.Utils
+import org.greenrobot.eventbus.EventBus
 
 // TODO: Is this class even needed or should it just move up?
 class EventController(private val gameState: GameState) {
+    private val eventBus = EventBus.getDefault()
     private val monsterEncounterChance = 0.1
     private val itemDropChance = 0.1
     private val fightController = FightController(gameState)
@@ -24,11 +27,11 @@ class EventController(private val gameState: GameState) {
         // TODO: Base flee chance by character stats vs monster
         // TODO: Move flee logic into FightController
         if (rollOnSpeedAttribute()) {
-            ActionLogController.INSTANCE.log("You escaped successfully!")
+            eventBus.post(PlayerEscaped(true))
             fightController.flee()
             gameState.state = State.MAP
         } else {
-            ActionLogController.INSTANCE.log("You failed to escape!")
+            eventBus.post(PlayerEscaped(false))
             fightController.fight()
         }
     }

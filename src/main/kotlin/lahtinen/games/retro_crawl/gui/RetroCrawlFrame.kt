@@ -14,20 +14,21 @@ import lahtinen.games.retro_crawl.LevelController
 import lahtinen.games.retro_crawl.LevelController.Direction
 import lahtinen.games.retro_crawl.Player
 import lahtinen.games.retro_crawl.State
-import lahtinen.games.retro_crawl.controller.ActionLogController
 import lahtinen.games.retro_crawl.controller.EventController
+import lahtinen.games.retro_crawl.events.StoryExposition
 import lahtinen.games.retro_crawl.monster.Monster
+import org.greenrobot.eventbus.EventBus
 import java.awt.KeyboardFocusManager
 import java.awt.event.KeyEvent
 import javax.swing.JFrame
 
 class RetroCrawlFrame : JFrame() {
+    private val eventBus = EventBus.getDefault()
 
     init {
         val mainFrame = MainFrame()
         val characterAttributes = CharacterAttributes.newCharacter()
-        val dialog = CharacterDialog(this, characterAttributes)
-        dialog.isVisible = true
+        CharacterDialog(this, characterAttributes).isVisible = true
         val player = Player(characterAttributes)
         val gameState = GameState(player, 1, State.MAP)
         val eventController = EventController(gameState)
@@ -65,7 +66,7 @@ class RetroCrawlFrame : JFrame() {
                         if (playerMoved) {
                             eventController.move()
                         } else {
-                            ActionLogController.INSTANCE.log("You can't walk that way...")
+                            eventBus.post(StoryExposition("You can't walk that way..."))
                         }
                     } else if (gameState.state == State.FIGHT) {
                         if (e.keyCode == KeyEvent.VK_SPACE) {
@@ -81,7 +82,7 @@ class RetroCrawlFrame : JFrame() {
                             if (canMove) {
                                 eventController.attemptFlee()
                             } else {
-                                ActionLogController.INSTANCE.log("You can't walk that way...")
+                                eventBus.post(StoryExposition("You can't walk that way..."))
                             }
                         }
                     }
@@ -91,9 +92,11 @@ class RetroCrawlFrame : JFrame() {
     }
 
     private fun printStoryLog() {
-        ActionLogController.INSTANCE.log(
-            """You stand before a great mountain. At the foot of the mountain you see a cave entrance. You carefully approach the cave and enter. 
+        eventBus.post(
+            StoryExposition(
+                """You stand before a great mountain. At the foot of the mountain you see a cave entrance. You carefully approach the cave and enter. 
 The air is heavy and damp. The darkness swallows you. You instantly regret that you entered and turn around to leave but all you see is a solid rock wall. It's too late to go back."""
+            )
         )
     }
 }
