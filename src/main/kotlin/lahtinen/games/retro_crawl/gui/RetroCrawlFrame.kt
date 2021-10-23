@@ -31,7 +31,7 @@ class RetroCrawlFrame : JFrame() {
         val player = Player(characterAttributes)
         val gameState = GameState(player, 1, State.MAP)
         val eventController = EventController(gameState)
-        val levelController = LevelController(gameState, mainFrame.mapView)
+        val levelController = LevelController(gameState)
         setupKeyListeners(gameState, levelController, eventController)
         printStoryLog()
 

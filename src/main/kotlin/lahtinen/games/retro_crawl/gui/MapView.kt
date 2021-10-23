@@ -1,31 +1,44 @@
 package lahtinen.games.retro_crawl.gui
 
 import lahtinen.games.retro_crawl.util.SimplePoint
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.image.BufferedImage
 import java.util.*
-import java.util.logging.Logger
 import javax.swing.JPanel
 import kotlin.math.min
 
-class MapView : JPanel(), Observer {
-    private val log: Logger = Logger.getLogger(javaClass.name)
+class MapView : JPanel() {
     private var levelImage: BufferedImage? = null
     private var playerPosition: SimplePoint? = null
     private lateinit var playerTraversedMatrix: Array<BooleanArray>
 
     init {
+        EventBus.getDefault().register(this)
         background = Color.BLACK
+    }
+
+    @Subscribe
+    fun onBufferedImage(event: BufferedImage) {
+        levelImage = event
+        playerTraversedMatrix = initiateBooleanMatrix(levelImage)
+        repaint()
+    }
+
+    @Subscribe
+    fun onSimplePoint(event: SimplePoint) {
+        playerPosition = event
+        repaint()
     }
 
     override fun paintComponent(g: Graphics) {
         super.paintComponent(g)
         if (levelImage != null && playerPosition != null) {
             val canvasImage = deepCopy(levelImage!!)
-            val canvasGraphics = canvasImage.graphics
-            drawPlayerPosition(canvasGraphics)
-            drawFogOfWar(canvasGraphics)
+            drawPlayerPosition(canvasImage.graphics)
+            drawFogOfWar(canvasImage.graphics)
             g.drawImage(
                 canvasImage,
                 5,
@@ -37,8 +50,15 @@ class MapView : JPanel(), Observer {
         }
     }
 
+    private fun deepCopy(bi: BufferedImage) = BufferedImage(
+        bi.colorModel,
+        bi.copyData(null),
+        bi.colorModel.isAlphaPremultiplied,
+        null
+    )
+
     private fun drawPlayerPosition(g: Graphics) {
-        g.color = Color.PINK
+        g.color = Color.BLUE
         g.drawRect(playerPosition!!.x, playerPosition!!.y, 0, 0)
     }
 
@@ -80,27 +100,6 @@ class MapView : JPanel(), Observer {
             }
         }
         return fogOfWarMatrix
-    }
-
-    private fun deepCopy(bi: BufferedImage): BufferedImage {
-        return BufferedImage(
-            bi.colorModel,
-            bi.copyData(null),
-            bi.colorModel.isAlphaPremultiplied,
-            null
-        )
-    }
-
-    override fun update(o: Observable, mapUpdateData: Any) {
-        when (mapUpdateData) {
-            is BufferedImage -> {
-                levelImage = mapUpdateData
-                playerTraversedMatrix = initiateBooleanMatrix(levelImage)
-            }
-            is SimplePoint -> playerPosition = mapUpdateData
-            else -> log.severe("Player reached level transition")
-        }
-        this.repaint()
     }
 
     private fun initiateBooleanMatrix(levelImage: BufferedImage?): Array<BooleanArray> {

@@ -1,19 +1,19 @@
 package lahtinen.games.retro_crawl
 
 import lahtinen.games.retro_crawl.util.SimplePoint
+import org.greenrobot.eventbus.EventBus
 import java.io.File
-import java.util.*
 import java.util.logging.Logger
 import javax.imageio.ImageIO
 
-class LevelController(private val gameState: GameState, observer: Observer?) : Observable() {
+class LevelController(private val gameState: GameState) {
     private val log: Logger = Logger.getLogger(javaClass.name)
+    private val eventBus = EventBus.getDefault()
     private lateinit var map: Array<Array<MapData?>>
     private var currentPosition: SimplePoint? = null
     private var finishPosition: SimplePoint? = null
 
     init {
-        addObserver(observer)
         loadLevel()
     }
 
@@ -39,10 +39,8 @@ class LevelController(private val gameState: GameState, observer: Observer?) : O
                     map[i][j] = mapDataType
                 }
             }
-            setChanged()
-            notifyObservers(image)
-            setChanged()
-            notifyObservers(currentPosition)
+            eventBus.post(image)
+            eventBus.post(currentPosition)
         } catch (ex: Exception) {
             log.severe("Could not open map: $fileName")
         }
@@ -74,8 +72,7 @@ class LevelController(private val gameState: GameState, observer: Observer?) : O
             Direction.EAST -> move(1, 0, doMove)
         }
         if (doMove) {
-            setChanged()
-            notifyObservers(currentPosition)
+            eventBus.post(currentPosition)
             checkAndTriggerMapEvent()
         }
         return validMove
@@ -86,11 +83,7 @@ class LevelController(private val gameState: GameState, observer: Observer?) : O
             false
         } else {
             if (move) {
-                currentPosition =
-                    SimplePoint(
-                        currentPosition!!.x + x,
-                        currentPosition!!.y + y
-                    )
+                currentPosition = SimplePoint(currentPosition!!.x + x, currentPosition!!.y + y)
             }
             true
         }
