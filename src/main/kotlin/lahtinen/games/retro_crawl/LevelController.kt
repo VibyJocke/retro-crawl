@@ -2,7 +2,6 @@ package lahtinen.games.retro_crawl
 
 import lahtinen.games.retro_crawl.util.SimplePoint
 import org.greenrobot.eventbus.EventBus
-import java.io.File
 import java.util.logging.Logger
 import javax.imageio.ImageIO
 
@@ -23,9 +22,9 @@ class LevelController(private val gameState: GameState) {
      * start and end locations.
      */
     private fun loadLevel() {
-        val fileName = "map${gameState.level}.bmp"
+        val filePath = "/maps/map${gameState.level}.bmp"
         try {
-            val image = ImageIO.read(File(fileName))
+            val image = ImageIO.read(javaClass.getResource(filePath))
             val mapWidth = image.width
             val mapHeight = image.height
             map = Array(mapWidth) { arrayOfNulls(mapHeight) }
@@ -42,7 +41,7 @@ class LevelController(private val gameState: GameState) {
             eventBus.post(image)
             eventBus.post(currentPosition)
         } catch (ex: Exception) {
-            log.severe("Could not open map: $fileName")
+            log.severe("Could not open map: $filePath")
         }
     }
 

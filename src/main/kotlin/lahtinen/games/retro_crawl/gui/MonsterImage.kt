@@ -10,7 +10,7 @@ import javax.swing.JPanel
 
 
 class MonsterImage(monster: Monster) : JPanel() {
-    private val image = ImageIO.read(File("${monster.name}.bmp"))
+    private val image = ImageIO.read(javaClass.getResource("/monsters/${monster.name}.bmp"))
     private val imageSize = 256
 
     init {
