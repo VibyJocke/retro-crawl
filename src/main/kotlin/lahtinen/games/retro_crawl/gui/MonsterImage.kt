@@ -4,7 +4,6 @@ import lahtinen.games.retro_crawl.monster.Monster
 import java.awt.Dimension
 import java.awt.Graphics
 import java.awt.image.BufferedImage
-import java.io.File
 import javax.imageio.ImageIO
 import javax.swing.JPanel
 

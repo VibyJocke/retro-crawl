@@ -1,12 +1,12 @@
 package lahtinen.games.retro_crawl
 
 
-class Health(private val baseHealth: Int) {
-    private var health: Int = baseHealth
+class Health(private val characterAttributes: CharacterAttributes) {
+    private var health: Int = characterAttributes.vitality
 
     fun restoreHealth(healthToAdd: Int) {
-        if (health + healthToAdd >= baseHealth) {
-            health = baseHealth
+        if (health + healthToAdd >= characterAttributes.vitality) {
+            health = characterAttributes.vitality
         }
         health += healthToAdd
     }

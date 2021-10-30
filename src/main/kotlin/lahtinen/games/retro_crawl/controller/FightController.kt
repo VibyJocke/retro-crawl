@@ -1,7 +1,6 @@
 package lahtinen.games.retro_crawl.controller
 
 import lahtinen.games.retro_crawl.GameState
-import lahtinen.games.retro_crawl.Health
 import lahtinen.games.retro_crawl.State
 import lahtinen.games.retro_crawl.events.MonsterDied
 import lahtinen.games.retro_crawl.events.MonsterEncountered
@@ -16,23 +15,28 @@ class FightController(private val gameState: GameState) {
     private val eventbus = EventBus.getDefault()
     private val monsterFactory = MonsterFactory()
     private var currentMonster: Monster? = null
-    private var currentMonsterHealth: Health? = null
+    private var currentMonsterHealth: Int = 0
 
     fun fight() {
         if (currentMonster == null) {
             currentMonster = monsterFactory.createRandomMonster(gameState.level)
-            currentMonsterHealth = Health(currentMonster!!.baseHealth)
+            currentMonsterHealth = currentMonster!!.baseHealth
             eventbus.post(MonsterEncountered(currentMonster!!))
         } else {
+            Thread.sleep(500)
+
             val playerGivenDamage = gameState.player.givenDamage()
-            currentMonsterHealth!!.drainHealth(playerGivenDamage)
+            currentMonsterHealth =- playerGivenDamage
             eventbus.post(MonsterHit(playerGivenDamage, currentMonster!!))
-            if (currentMonsterHealth!!.dead()) {
+            if (currentMonsterHealth >= 0) {
                 eventbus.post(MonsterDied(currentMonster!!))
+                gameState.player.addExperience(currentMonster!!.xpReward)
                 gameState.state = State.MAP
                 resetMonster()
                 return
             }
+
+            Thread.sleep(500)
 
             val playerReceivedDamage = gameState.player.hurtCombat(currentMonster!!.baseDamage)
             eventbus.post(PlayerHit(playerReceivedDamage))
@@ -50,6 +54,6 @@ class FightController(private val gameState: GameState) {
 
     private fun resetMonster() {
         currentMonster = null
-        currentMonsterHealth = null
+        currentMonsterHealth = 0
     }
 }

@@ -6,6 +6,7 @@ import lahtinen.games.retro_crawl.events.MonsterHit
 import lahtinen.games.retro_crawl.events.PlayerDied
 import lahtinen.games.retro_crawl.events.PlayerEscaped
 import lahtinen.games.retro_crawl.events.PlayerHit
+import lahtinen.games.retro_crawl.events.PlayerLeveledUp
 import lahtinen.games.retro_crawl.events.StoryExposition
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -48,6 +49,9 @@ class ActionLogTextArea : JTextArea() {
 
     @Subscribe
     fun onLog(event: MonsterDied) = log("You killed the ${event.monster.name}!")
+
+    @Subscribe
+    fun onLog(event: PlayerLeveledUp) = log("Level up!")
 
     @Subscribe
     fun onLog(event: PlayerDied) = log("You died...")

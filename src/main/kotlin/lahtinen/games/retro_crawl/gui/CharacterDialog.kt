@@ -16,7 +16,7 @@ import javax.swing.border.EmptyBorder
 
 class CharacterDialog(owner: JFrame, val newCharacter: CharacterAttributes) : JDialog(owner, true) {
     private val name: JTextField = JTextField(newCharacter.name)
-    private val health: StatField = StatField(this, "Vitality", newCharacter.maxHealth)
+    private val health: StatField = StatField(this, "Vitality", newCharacter.vitality)
     private val strength: StatField = StatField(this, "Strength", newCharacter.strength)
     private val speed: StatField = StatField(this, "Agility", newCharacter.speed)
     private val pointsLeft = JLabel("0")
@@ -73,7 +73,7 @@ class CharacterDialog(owner: JFrame, val newCharacter: CharacterAttributes) : JD
             override fun actionPerformed(e: ActionEvent) {
                 if (name.text.isNotBlank() && getPointsLeft() == 0) {
                     newCharacter.name = name.text
-                    newCharacter.maxHealth = health.getValue()
+                    newCharacter.vitality = health.getValue()
                     newCharacter.strength = strength.getValue()
                     newCharacter.speed = speed.getValue()
                     dispose()

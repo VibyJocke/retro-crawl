@@ -3,16 +3,16 @@ package lahtinen.games.retro_crawl
 import lahtinen.games.retro_crawl.item.InventoryManaged
 
 
-class Inventory(var weightLimit: Int) {
+class Inventory(private val characterAttributes: CharacterAttributes) {
     private val inventory = mutableListOf<InventoryManaged>()
 
     fun putItem(item: InventoryManaged) {
-        if (totalWeight() + item.weight < weightLimit) {
+        if (totalWeight() + item.weight < weightLimit()) {
             inventory.add(item)
         }
     }
 
-    private fun totalWeight(): Int {
-        return inventory.sumOf { item -> item.weight }
-    }
+    private fun weightLimit() = characterAttributes.strength * 2
+
+    private fun totalWeight() = inventory.sumOf { item -> item.weight }
 }

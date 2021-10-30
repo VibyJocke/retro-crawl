@@ -1,7 +1,6 @@
 package lahtinen.games.retro_crawl.gui
 
 import lahtinen.games.retro_crawl.events.MonsterEncountered
-import lahtinen.games.retro_crawl.monster.Monster
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.awt.BorderLayout

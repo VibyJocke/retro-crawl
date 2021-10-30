@@ -2,12 +2,12 @@ package lahtinen.games.retro_crawl
 
 class CharacterAttributes(
     var name: String,
-    var maxHealth: Int,
+    var vitality: Int,
     var strength: Int,
     var speed: Int
 ) {
-    fun increaseMaxHealth(i: Int) {
-        maxHealth += i
+    fun increaseVitality(i: Int) {
+        vitality += i
     }
 
     fun increaseStrength(i: Int) {
