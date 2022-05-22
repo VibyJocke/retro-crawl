@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.5.0"
+    kotlin("jvm") version "1.6.21"
     application
 }
 
@@ -17,16 +17,16 @@ repositories {
 }
 
 dependencies {
-    implementation("org.greenrobot:eventbus:3.2.0")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.5.31")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
+    implementation("org.greenrobot:eventbus-java:3.3.1")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.6.21")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
 }
 
 tasks.test {
     useJUnitPlatform()
 }
 
-tasks.withType<KotlinCompile>() {
+tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "11"
 }

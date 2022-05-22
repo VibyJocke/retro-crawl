@@ -13,7 +13,7 @@ import javax.swing.UIManager
 class MainFrame : JFrame() {
     private val log: Logger = Logger.getAnonymousLogger()
     private val interactionViewHolder = JPanel()
-    val mapView = MapView()
+    private val mapView = MapView()
 
     init {
         initFrame()
@@ -60,7 +60,7 @@ class MainFrame : JFrame() {
         add(splitPane, BorderLayout.CENTER)
     }
 
-    // Use to switch between e.g. inventory and fight view
+    // Used to switch between e.g. inventory and fight view
     fun setInteractionView(panel: JPanel) {
         interactionViewHolder.removeAll()
         interactionViewHolder.add(panel)

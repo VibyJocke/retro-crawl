@@ -5,7 +5,7 @@ import lahtinen.games.retro_crawl.item.Weapon
 import kotlin.math.max
 
 class Player(val characterAttributes: CharacterAttributes) {
-    private var level = Level(characterAttributes)
+    private val level = Level(characterAttributes)
     private val health = Health(characterAttributes)
     private var equippedWeapon = Weapon.FISTS
     private val equippedArmor = mutableListOf<Armor>()
@@ -19,11 +19,7 @@ class Player(val characterAttributes: CharacterAttributes) {
 
     fun hurtGeneric(damage: Int) = health.drainHealth(damage)
 
-    fun hurtCombat(damage: Int): Int {
-        val healthToDrain = max(0, damage - equippedArmor.sumOf { a -> a.base_protection })
-        health.drainHealth(healthToDrain)
-        return healthToDrain
-    }
+    fun hurtCombat(damage: Int) = max(0, damage - equippedArmor.sumOf { a -> a.baseProtection }).also { health.drainHealth(it) }
 
     fun isDead() = health.dead()
 

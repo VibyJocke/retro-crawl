@@ -3,4 +3,4 @@ Retro Crawl is a hobby project loosely based on the game [Pocket Dimension](http
 It's a simple dungeon crawler style game that is very much a work-in-progress :)
 
 ## Requirements
-- Kotlin 1.5
+- Kotlin 1.6
