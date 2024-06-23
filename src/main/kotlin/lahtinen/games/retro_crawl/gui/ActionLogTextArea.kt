@@ -14,7 +14,6 @@ import javax.swing.JTextArea
 import javax.swing.SwingUtilities
 
 class ActionLogTextArea : JTextArea() {
-    private val hitVariations = listOf("SMACK!", "SLASH!", "KAPOW!", "THUD!", "BAM!", "CLINK!")
 
     init {
         EventBus.getDefault().register(this)
@@ -30,14 +29,12 @@ class ActionLogTextArea : JTextArea() {
 
     @Subscribe
     fun onLog(event: PlayerHit) {
-        log(hitVariations.random())
-        log("You got hit for ${event.damage} damage.")
+        log("❤\uFE0F You got hit for ${event.damage} damage.")
     }
 
     @Subscribe
     fun onLog(event: MonsterHit) {
-        log(hitVariations.random())
-        log("You hit for ${event.damage} damage.")
+        log("\uD83D\uDDE1\uFE0F You hit for ${event.damage} damage.")
     }
 
     @Subscribe
@@ -45,16 +42,16 @@ class ActionLogTextArea : JTextArea() {
 
     @Subscribe
     fun onLog(event: PlayerEscaped) =
-        if (event.successful) log("You escaped successfully!") else log("You failed to escape!")
+        if (event.successful) log(" \uD83C\uDFC3 You escaped successfully!") else log("You failed to escape!")
 
     @Subscribe
-    fun onLog(event: MonsterDied) = log("You killed the ${event.monster.name}!")
+    fun onLog(event: MonsterDied) = log("⚔\uFE0F You killed the ${event.monster.name}!")
 
     @Subscribe
-    fun onLog(event: PlayerLeveledUp) = log("Level up!")
+    fun onLog(event: PlayerLeveledUp) = log("⬆\uFE0F Level up!")
 
     @Subscribe
-    fun onLog(event: PlayerDied) = log("You died...")
+    fun onLog(event: PlayerDied) = log("\uD83D\uDC80 You died...")
 
     private fun log(text: String) {
         SwingUtilities.invokeLater {
