@@ -6,7 +6,7 @@ import org.greenrobot.eventbus.Subscribe
 import java.awt.BorderLayout
 import javax.swing.JLabel
 import javax.swing.JPanel
-import javax.swing.JTextArea
+import javax.swing.JTable
 import javax.swing.border.EmptyBorder
 
 class FightPanel : JPanel(BorderLayout()) {
@@ -19,11 +19,18 @@ class FightPanel : JPanel(BorderLayout()) {
 
     @Subscribe
     fun onMonsterEncountered(event: MonsterEncountered) {
-        val title = JLabel("Fight!")
-        title.font = GuiConstants.TITLE_FONT
-        add(title, BorderLayout.NORTH)
+        add(JLabel("Fight!").apply { font = GuiConstants.TITLE_FONT }, BorderLayout.NORTH)
         add(MonsterImage(event.monster), BorderLayout.CENTER)
-        add(JTextArea(event.monster.monsterName), BorderLayout.SOUTH) // TODO replace with structured panel
+        add(
+            JTable(
+                arrayOf(
+                    arrayOf("Monster", event.monster.monsterName),
+                    arrayOf("Health", event.monster.baseHealth),
+                    arrayOf("Damage", event.monster.baseDamage)
+                ),
+                arrayOf("Field", "Value")
+            ), BorderLayout.SOUTH
+        )
         repaint()
     }
 }
