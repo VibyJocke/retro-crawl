@@ -2,12 +2,15 @@ package lahtinen.games.retro_crawl.gui
 
 import java.awt.BorderLayout
 import java.awt.Dimension
+import java.awt.GridLayout
 import java.awt.ScrollPane
 import java.awt.Toolkit
 import java.util.logging.Logger
 import javax.swing.JFrame
+import javax.swing.JLabel
 import javax.swing.JPanel
 import javax.swing.JSplitPane
+import javax.swing.JTextField
 import javax.swing.UIManager
 
 class MainFrame : JFrame() {
@@ -42,8 +45,14 @@ class MainFrame : JFrame() {
     private fun initGui() {
         contentPane.layout = BorderLayout()
 
+        val playerPanel = JPanel(GridLayout(1,3))
+        playerPanel.add(JLabel("Health: 12/16"))
+        playerPanel.add(JLabel("Strength: 23"))
+        playerPanel.add(JLabel("Whatever: asdas"))
+
         val leftGroup = JPanel(BorderLayout())
         leftGroup.add(interactionViewHolder, BorderLayout.CENTER)
+        leftGroup.add(playerPanel, BorderLayout.NORTH)
         val logScrollPane = ScrollPane(ScrollPane.SCROLLBARS_ALWAYS)
         logScrollPane.add(ActionLogTextArea())
         logScrollPane.preferredSize = Dimension(0, 300)
