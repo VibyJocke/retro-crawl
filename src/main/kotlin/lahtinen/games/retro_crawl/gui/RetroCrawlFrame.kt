@@ -14,9 +14,11 @@ import lahtinen.games.retro_crawl.LevelController
 import lahtinen.games.retro_crawl.LevelController.Direction
 import lahtinen.games.retro_crawl.Player
 import lahtinen.games.retro_crawl.State
-import lahtinen.games.retro_crawl.controller.EventController
+import lahtinen.games.retro_crawl.controller.FightController
+import lahtinen.games.retro_crawl.events.Fight
 import lahtinen.games.retro_crawl.events.MonsterDied
 import lahtinen.games.retro_crawl.events.MonsterEncountered
+import lahtinen.games.retro_crawl.events.Move
 import lahtinen.games.retro_crawl.events.PlayerEscaped
 import lahtinen.games.retro_crawl.events.StoryExposition
 import org.greenrobot.eventbus.EventBus
@@ -36,57 +38,49 @@ class RetroCrawlFrame : JFrame() {
         CharacterDialog(this, characterAttributes).isVisible = true
         val player = Player(characterAttributes)
         val gameState = GameState(player, 1, State.MAP)
-        val eventController = EventController(gameState)
+        val eventController = FightController(gameState)
         val levelController = LevelController(gameState)
-        setupKeyListeners(gameState, levelController, eventController)
+        setupKeyListeners(gameState, levelController)
         printStoryLog()
         pack()
         eventBus.register(this)
     }
 
-    private val moveKeys = listOf(
-        KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_SPACE
+    private val moveKeys = mapOf(
+        KeyEvent.VK_LEFT to Direction.WEST,
+        KeyEvent.VK_RIGHT to Direction.EAST,
+        KeyEvent.VK_UP to Direction.NORTH,
+        KeyEvent.VK_DOWN to Direction.SOUTH,
     )
 
     private fun setupKeyListeners(
         gameState: GameState,
-        levelController: LevelController,
-        eventController: EventController
+        levelController: LevelController
     ) {
         KeyboardFocusManager.getCurrentKeyboardFocusManager()
             .addKeyEventDispatcher { e ->
-                if (e.id == KeyEvent.KEY_PRESSED && e.keyCode in moveKeys) {
-                    if (gameState.state == State.MAP) {
-                        val playerMoved = when (e.keyCode) {
-                            KeyEvent.VK_LEFT -> levelController.move(Direction.WEST)
-                            KeyEvent.VK_RIGHT -> levelController.move(Direction.EAST)
-                            KeyEvent.VK_UP -> levelController.move(Direction.NORTH)
-                            KeyEvent.VK_DOWN -> levelController.move(Direction.SOUTH)
+                var playerMoved = false
+                if (e.id == KeyEvent.KEY_PRESSED) {
+                    if (gameState.state == State.MAP && moveKeys[e.keyCode] != null) {
+                        playerMoved = when (e.keyCode) {
+                            KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_UP, KeyEvent.VK_DOWN ->
+                                levelController.move(moveKeys[e.keyCode]!!)
                             else -> false
-                        }
-                        if (playerMoved) {
-                            eventController.move()
-                        } else {
-                            eventBus.post(StoryExposition("You can't walk that way..."))
                         }
                     } else if (gameState.state == State.FIGHT) {
                         if (e.keyCode == KeyEvent.VK_SPACE) {
-                            eventController.fight()
+                            eventBus.post(Fight())
                         } else {
-                            val canMove = when (e.keyCode) {
-                                KeyEvent.VK_LEFT -> levelController.canMove(Direction.WEST)
-                                KeyEvent.VK_RIGHT -> levelController.canMove(Direction.EAST)
-                                KeyEvent.VK_UP -> levelController.canMove(Direction.NORTH)
-                                KeyEvent.VK_DOWN -> levelController.canMove(Direction.SOUTH)
+                            playerMoved = when (e.keyCode) {
+                                KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_UP, KeyEvent.VK_DOWN ->
+                                    levelController.canMove(moveKeys[e.keyCode]!!)
                                 else -> false
-                            }
-                            if (canMove) {
-                                eventController.attemptFlee()
-                            } else {
-                                eventBus.post(StoryExposition("You can't walk that way..."))
                             }
                         }
                     }
+                }
+                if (playerMoved) {
+                    eventBus.post(Move())
                 }
                 false
             }

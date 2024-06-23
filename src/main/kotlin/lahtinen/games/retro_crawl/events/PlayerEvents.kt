@@ -11,4 +11,6 @@ data class MonsterEncountered(val monster: Monster)
 data class StoryExposition(val text: String)
 data class MonsterDied(val monster: Monster)
 data class PlayerLeveledUp(val level: Int, val attributes: CharacterAttributes)
+class Move
+class Fight
 class PlayerDied
