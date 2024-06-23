@@ -15,12 +15,12 @@ class EventController(private val gameState: GameState) {
     private val itemDropController = ItemDropController()
 
     fun move() {
-        fightMonster()
-        //dropItem();
+        chanceMonster()
+        //chanceItemDrop();
     }
 
     fun fight() {
-        fightController.fight()
+        fightController.fight(true)
     }
 
     fun attemptFlee() {
@@ -32,7 +32,7 @@ class EventController(private val gameState: GameState) {
             gameState.state = State.MAP
         } else {
             eventBus.post(PlayerEscaped(false))
-            fightController.fight()
+            fightController.fight(false)
         }
     }
 
@@ -42,14 +42,14 @@ class EventController(private val gameState: GameState) {
                     ) / 10.0
         )
 
-    private fun fightMonster() {
+    private fun chanceMonster() {
         if (Utils.roll(monsterEncounterChance)) {
             gameState.state = State.FIGHT
-            fightController.fight()
+            fightController.fight(true)
         }
     }
 
-    private fun dropItem() {
+    private fun chanceItemDrop() {
         if (Utils.roll(itemDropChance)) {
             itemDropController.drop()
         }

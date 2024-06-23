@@ -17,26 +17,24 @@ class FightController(private val gameState: GameState) {
     private var currentMonster: Monster? = null
     private var currentMonsterHealth: Int = 0
 
-    fun fight() {
+    fun fight(initiator: Boolean) {
         if (currentMonster == null) {
             currentMonster = monsterFactory.createRandomMonster(gameState.level)
             currentMonsterHealth = currentMonster!!.baseHealth
             eventbus.post(MonsterEncountered(currentMonster!!))
         } else {
-            Thread.sleep(500)
-
-            val playerGivenDamage = gameState.player.givenDamage()
-            currentMonsterHealth =- playerGivenDamage
-            eventbus.post(MonsterHit(playerGivenDamage, currentMonster!!))
-            if (currentMonsterHealth >= 0) {
-                eventbus.post(MonsterDied(currentMonster!!))
-                gameState.player.addExperience(currentMonster!!.xpReward)
-                gameState.state = State.MAP
-                resetMonster()
-                return
+            if (initiator) {
+                val playerGivenDamage = gameState.player.givenDamage()
+                currentMonsterHealth = -playerGivenDamage
+                eventbus.post(MonsterHit(playerGivenDamage, currentMonster!!))
+                if (currentMonsterHealth >= 0) {
+                    eventbus.post(MonsterDied(currentMonster!!))
+                    gameState.player.addExperience(currentMonster!!.xpReward)
+                    gameState.state = State.MAP
+                    resetMonster()
+                    return
+                }
             }
-
-            Thread.sleep(500)
 
             val playerReceivedDamage = gameState.player.hurtCombat(currentMonster!!.baseDamage)
             eventbus.post(PlayerHit(playerReceivedDamage))
