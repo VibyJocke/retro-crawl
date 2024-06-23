@@ -34,6 +34,7 @@ class LevelController(private val gameState: GameState) {
                     when (mapDataType) {
                         MapData.START -> currentPosition = SimplePoint(j, i)
                         MapData.FINISH -> finishPosition = SimplePoint(j, i)
+                        else -> {}
                     }
                     map[i][j] = mapDataType
                 }
