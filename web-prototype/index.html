@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#101713" />
+    <meta
+      name="description"
+      content="A browser-based dungeon-crawling prototype inspired by Pocket Dimension."
+    />
+    <title>Retro Crawl — The Hollow</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="Retro Crawl home">
+          <span class="brand-mark" aria-hidden="true">✳</span>
+          <span>RETRO<span class="brand-light">CRAWL</span></span>
+        </a>
+        <div class="topbar-center"><span class="live-dot"></span> THE HOLLOW <span class="topbar-divider">/</span> <span id="floor-label">FLOOR 01</span></div>
+        <div class="topbar-actions">
+          <span class="run-status"><span class="status-dot"></span> RUN IN PROGRESS</span>
+          <button id="new-run" class="icon-button" type="button" aria-label="Start a new run" title="New run">↻</button>
+        </div>
+      </header>
+
+      <main class="game-layout">
+        <section class="adventure-column" aria-label="Dungeon exploration">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">YOUR DESCENT BEGINS</p>
+              <h1 id="floor-title">The Mossbound Halls</h1>
+            </div>
+            <div class="floor-progress" aria-label="Dungeon floor">
+              <span id="floor-number">01</span><span class="progress-slash">/</span><span>04</span>
+            </div>
+          </div>
+
+          <div class="map-frame">
+            <div class="map-topline">
+              <span class="map-coordinate"><span class="coordinate-dot"></span> UNCHARTED TERRITORY</span>
+              <span class="map-scale">FIELD MAP <span>·</span> <span id="map-position">— : —</span></span>
+            </div>
+            <div class="map-stage">
+              <div id="game" aria-label="Dungeon map. Move with arrow keys or WASD."></div>
+              <div class="map-vignette" aria-hidden="true"></div>
+              <div class="map-hint"><span class="keycap">W</span><span class="keycap">A</span><span class="keycap">S</span><span class="keycap">D</span><span class="hint-separator"></span> TO MOVE</div>
+
+              <section id="battle-card" class="battle-card is-hidden" aria-live="polite">
+                <div class="battle-topline"><span class="battle-kicker"><span class="live-dot danger"></span> HOSTILE ENCOUNTER</span><span id="battle-floor" class="battle-floor">FLOOR 01</span></div>
+                <div class="monster-art" id="monster-art" aria-hidden="true">🐍</div>
+                <p id="monster-kind" class="monster-kind">A DANGEROUS CREATURE</p>
+                <h2 id="monster-name">Cave snake</h2>
+                <p id="monster-description" class="monster-description">It coils in the dust, ready to strike.</p>
+                <div class="monster-health-row"><span>VITALITY</span><span id="monster-health-text">12 / 12</span></div>
+                <div class="health-track monster-track"><span id="monster-health-fill"></span></div>
+                <div class="battle-actions">
+                  <button id="attack-button" class="button button-primary" type="button"><span aria-hidden="true">⚔</span> Strike</button>
+                  <button id="potion-button" class="button button-secondary" type="button"><span aria-hidden="true">✦</span> Potion <span id="potion-count" class="button-count">1</span></button>
+                  <button id="flee-button" class="button button-quiet" type="button">Retreat <span aria-hidden="true">↗</span></button>
+                </div>
+                <p class="battle-tip">A clear head is worth more than a brave death.</p>
+              </section>
+
+              <section id="stairs-card" class="stairs-card is-hidden" aria-live="polite">
+                <div class="stairs-icon" aria-hidden="true">⇣</div>
+                <p class="eyebrow">A WAY DOWN</p>
+                <h2 id="stairs-title">The stone gives way</h2>
+                <p id="stairs-copy">A stairwell winds deeper into the dark.</p>
+                <button id="descend-button" class="button button-primary" type="button">Descend <span aria-hidden="true">→</span></button>
+              </section>
+
+              <section id="end-card" class="end-card is-hidden" aria-live="polite">
+                <span class="end-sigil" aria-hidden="true">✳</span>
+                <p id="end-eyebrow" class="eyebrow">THE HOLLOW REMEMBERS</p>
+                <h2 id="end-title">The dark takes you.</h2>
+                <p id="end-copy">Your story ends beneath the mountain.</p>
+                <button class="button button-primary" data-action="restart" type="button">Begin again <span aria-hidden="true">↻</span></button>
+              </section>
+              <div class="touch-pad" aria-label="Touch movement controls">
+                <button data-move="0,-1" type="button" aria-label="Move north">↑</button>
+                <button data-move="-1,0" type="button" aria-label="Move west">←</button>
+                <button data-move="0,1" type="button" aria-label="Move south">↓</button>
+                <button data-move="1,0" type="button" aria-label="Move east">→</button>
+              </div>
+            </div>
+            <div class="map-bottomline">
+              <span><span class="legend-player"></span> YOU</span>
+              <span><span class="legend-path"></span> EXPLORED</span>
+              <span><span class="legend-exit"></span> DESCENT</span>
+              <span class="map-controls"><button id="zoom-out" type="button" aria-label="Zoom out">−</button><span>100%</span><button id="zoom-in" type="button" aria-label="Zoom in">+</button></span>
+            </div>
+          </div>
+
+          <div class="action-log">
+            <div class="panel-heading log-heading">
+              <div><p class="eyebrow">FIELD NOTES</p><h2>Expedition log</h2></div>
+              <span class="live-label"><span class="live-dot"></span> LIVE</span>
+            </div>
+            <ol id="log-list" class="log-list" aria-live="polite"></ol>
+          </div>
+        </section>
+
+        <aside class="sidebar" aria-label="Character and expedition details">
+          <section class="panel character-panel">
+            <div class="character-header">
+              <div class="avatar" id="avatar-initials">?</div>
+              <div class="character-name-wrap"><p class="eyebrow">THE DELVER</p><h2 id="character-name">Unknown</h2><span id="character-class" class="character-class">AWAITING YOUR ARRIVAL</span></div>
+              <button id="edit-character" class="text-icon-button" type="button" aria-label="Edit character">···</button>
+            </div>
+            <div class="level-row">
+              <span class="level-badge">LV <span id="level-number">01</span></span>
+              <span class="xp-copy"><span id="xp-current">0</span> / <span id="xp-next">80</span> XP</span>
+              <span id="xp-next-label" class="xp-next-label">NEXT</span>
+            </div>
+            <div class="xp-track"><span id="xp-fill"></span></div>
+            <div class="health-heading"><span>VITALITY</span><span id="health-label">— / —</span></div>
+            <div class="health-track"><span id="health-fill"></span></div>
+            <div class="stats-grid">
+              <div class="stat-cell"><span class="stat-icon">✦</span><span class="stat-label">STRENGTH</span><strong id="strength-value">—</strong></div>
+              <div class="stat-cell"><span class="stat-icon">⌁</span><span class="stat-label">AGILITY</span><strong id="agility-value">—</strong></div>
+              <div class="stat-cell"><span class="stat-icon">⬡</span><span class="stat-label">ARMOR</span><strong id="armor-value">—</strong></div>
+            </div>
+          </section>
+
+          <section class="panel equipment-panel">
+            <div class="panel-heading compact-heading"><div><p class="eyebrow">CURRENTLY EQUIPPED</p><h2>Loadout</h2></div><span class="weight-label" id="weight-label">0 / 12 WT</span></div>
+            <div class="equipment-row"><span class="equipment-icon weapon-icon">⚔</span><span class="equipment-copy"><span class="equipment-type">WEAPON</span><strong id="weapon-name">Bare hands</strong></span><span id="weapon-damage" class="equipment-value">1 DMG</span></div>
+            <div class="equipment-row"><span class="equipment-icon armor-icon">⬡</span><span class="equipment-copy"><span class="equipment-type">ARMOR</span><strong id="armor-name">Traveler's coat</strong></span><span id="armor-defense" class="equipment-value">1 DEF</span></div>
+          </section>
+
+          <section class="panel inventory-panel">
+            <div class="panel-heading compact-heading"><div><p class="eyebrow">WHAT YOU CARRY</p><h2>Pack <span id="inventory-count" class="count-badge">0</span></h2></div><button id="sort-inventory" class="sort-button" type="button">SORT <span aria-hidden="true">↕</span></button></div>
+            <div id="inventory-list" class="inventory-list"></div>
+            <p class="inventory-footnote">Find supplies while exploring. A little goes a long way.</p>
+          </section>
+
+          <section class="panel map-panel">
+            <div class="panel-heading compact-heading"><div><p class="eyebrow">MEMORY OF THE STONE</p><h2>Sketch map</h2></div><span id="mapped-percent" class="mapped-percent">0% MAPPED</span></div>
+            <canvas id="minimap" width="250" height="150" aria-label="Miniature map of explored areas"></canvas>
+            <div class="map-legend"><span><i class="mini-legend-you"></i> YOU ARE HERE</span><span><i class="mini-legend-exit"></i> EXIT</span></div>
+          </section>
+
+          <section class="quote-card">
+            <span class="quote-mark" aria-hidden="true">“</span>
+            <p id="flavor-text">The mountain does not give up its secrets. It only gives you the chance to find them.</p>
+            <span class="quote-credit">— FROM THE DELVER'S JOURNAL</span>
+          </section>
+        </aside>
+      </main>
+      <footer class="app-footer"><span>AN EXPEDITION INTO THE UNKNOWN</span><span class="footer-center"><span class="keycap">↑</span><span class="keycap">←</span><span class="keycap">↓</span><span class="keycap">→</span> MOVE <span class="footer-dot">·</span> <span class="keycap">SPACE</span> STRIKE</span><span>BUILT FOR THE BRAVE <span class="footer-sigil">✳</span></span></footer>
+    </div>
+
+    <div id="character-modal" class="modal-backdrop">
+      <section class="character-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <button id="close-modal" class="modal-close" type="button" aria-label="Close character creation">×</button>
+        <div class="modal-ornament" aria-hidden="true">✳</div>
+        <p class="eyebrow">BEFORE YOU DESCEND</p>
+        <h2 id="modal-title">Who enters the dark?</h2>
+        <p class="modal-intro">The old mountain asks for a name. It does not ask if you are ready.</p>
+        <label class="name-label" for="name-input">YOUR NAME</label>
+        <input id="name-input" class="name-input" maxlength="20" value="Ari" autocomplete="off" />
+        <p class="name-error" id="name-error">Give your delver a name to continue.</p>
+        <p class="name-label class-label">CHOOSE YOUR BEGINNING</p>
+        <div class="class-options">
+          <button class="class-option is-selected" data-class="Vanguard" type="button">
+            <span class="class-symbol">⬡</span><strong>Vanguard</strong><span class="class-description">Hard to bring down.</span><span class="class-stats">VIT 7 <i>·</i> STR 3 <i>·</i> AGI 1</span>
+          </button>
+          <button class="class-option" data-class="Scout" type="button">
+            <span class="class-symbol">⌁</span><strong>Scout</strong><span class="class-description">Quick on their feet.</span><span class="class-stats">VIT 5 <i>·</i> STR 2 <i>·</i> AGI 4</span>
+          </button>
+          <button class="class-option" data-class="Wayfarer" type="button">
+            <span class="class-symbol">✦</span><strong>Wayfarer</strong><span class="class-description">A little of everything.</span><span class="class-stats">VIT 6 <i>·</i> STR 3 <i>·</i> AGI 2</span>
+          </button>
+        </div>
+        <button id="begin-button" class="button button-primary begin-button" type="button">ENTER THE HOLLOW <span aria-hidden="true">→</span></button>
+        <p class="modal-footnote"><span>⌁</span> YOUR JOURNEY IS SAVED IN THIS SESSION</p>
+      </section>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

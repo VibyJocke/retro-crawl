@@ -1,3 +1,5 @@
 .gradle
 .idea
 build
+web-prototype/node_modules
+web-prototype/dist
