@@ -11,11 +11,11 @@ npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite. To create and preview a production build:
+Open the local URL printed by Vite for development. To create a static
+production build:
 
 ```sh
 npm run build
-npm run preview
 ```
 
 ## Prototype loop
