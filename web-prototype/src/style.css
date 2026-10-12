@@ -63,7 +63,7 @@ input:focus-visible {
   align-items: center;
   border-bottom: 1px solid #30382f;
   color: #a5ad9f;
-  font: 10px var(--mono);
+  font: 11px var(--mono);
   letter-spacing: 0.12em;
 }
 
@@ -125,7 +125,7 @@ input:focus-visible {
   align-items: center;
   gap: 8px;
   color: #879184;
-  font-size: 9px;
+  font-size: 10px;
 }
 
 .status-dot {
@@ -182,7 +182,7 @@ input:focus-visible {
 .eyebrow {
   margin: 0 0 8px;
   color: #8f9b8c;
-  font: 9px var(--mono);
+  font: 10px var(--mono);
   letter-spacing: 0.14em;
 }
 
@@ -205,7 +205,7 @@ p {
   gap: 5px;
   margin-top: 19px;
   color: #828c7e;
-  font: 11px var(--mono);
+  font: 12px var(--mono);
 }
 
 .floor-progress span:first-child {
@@ -234,7 +234,7 @@ p {
   padding: 0 16px;
   background: #1a211c;
   color: #939d8e;
-  font: 9px var(--mono);
+  font: 10px var(--mono);
   letter-spacing: 0.09em;
 }
 
@@ -296,7 +296,7 @@ p {
   align-items: center;
   gap: 4px;
   color: #859084;
-  font: 8px var(--mono);
+  font: 9px var(--mono);
   letter-spacing: 0.09em;
   pointer-events: none;
 }
@@ -311,7 +311,7 @@ p {
   border-bottom-width: 2px;
   border-radius: 3px;
   color: #c4c8b9;
-  font: 9px var(--mono);
+  font: 10px var(--mono);
 }
 
 .hint-separator {
@@ -326,7 +326,7 @@ p {
   justify-content: flex-start;
   gap: 22px;
   border-top: 1px solid #30392f;
-  font-size: 8px;
+  font-size: 9px;
 }
 
 .map-bottomline > span {
@@ -401,7 +401,7 @@ p {
   justify-content: space-between;
   align-items: center;
   color: #a9aa8e;
-  font: 8px var(--mono);
+  font: 9px var(--mono);
   letter-spacing: 0.12em;
 }
 
@@ -439,7 +439,7 @@ p {
 .monster-kind {
   margin: 0 0 4px;
   color: #b99561;
-  font: 8px var(--mono);
+  font: 9px var(--mono);
   letter-spacing: 0.14em;
 }
 
@@ -454,7 +454,7 @@ p {
 .monster-description {
   margin: 6px 0 17px;
   color: #a4aa9c;
-  font: 12px/1.5 "DM Sans", sans-serif;
+  font: 13px/1.5 "DM Sans", sans-serif;
 }
 
 .monster-health-row,
@@ -463,7 +463,7 @@ p {
   justify-content: space-between;
   margin: 0 0 7px;
   color: #9ba393;
-  font: 8px var(--mono);
+  font: 9px var(--mono);
   letter-spacing: 0.1em;
 }
 
@@ -516,7 +516,7 @@ p {
   border: 1px solid transparent;
   border-radius: 3px;
   cursor: pointer;
-  font: 10px var(--mono);
+  font: 11px var(--mono);
   letter-spacing: 0.045em;
   transition: background 140ms ease, border-color 140ms ease, transform 140ms ease;
 }
@@ -567,13 +567,13 @@ p {
 
 .button-count {
   color: #9ca78c;
-  font-size: 9px;
+  font-size: 10px;
 }
 
 .battle-tip {
   margin: 10px 0 0;
   color: #768073;
-  font: italic 11px var(--display);
+  font: italic 12px var(--display);
 }
 
 .stairs-card,
@@ -599,7 +599,7 @@ p {
 .end-card > p:not(.eyebrow) {
   margin: 10px 0 20px;
   color: #a6ad9e;
-  font: 12px/1.6 "DM Sans", sans-serif;
+  font: 13px/1.6 "DM Sans", sans-serif;
 }
 
 .stairs-card .button,
@@ -677,7 +677,7 @@ p {
 .log-heading .eyebrow,
 .compact-heading .eyebrow {
   margin-bottom: 4px;
-  font-size: 8px;
+  font-size: 9px;
 }
 
 .live-label {
@@ -685,7 +685,7 @@ p {
   align-items: center;
   gap: 7px;
   color: #7e897c;
-  font: 8px var(--mono);
+  font: 9px var(--mono);
   letter-spacing: 0.1em;
 }
 
@@ -712,14 +712,14 @@ p {
   padding: 8px 0;
   border-top: 1px solid #283129;
   color: #adb4a5;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.45;
 }
 
 .log-index {
   flex: 0 0 18px;
   color: #687568;
-  font: 9px var(--mono);
+  font: 10px var(--mono);
 }
 
 .log-entry.important > span:last-child {
@@ -781,7 +781,7 @@ p {
 
 .character-name-wrap .eyebrow {
   margin-bottom: 3px;
-  font-size: 8px;
+  font-size: 9px;
 }
 
 .character-name-wrap h2 {
@@ -797,7 +797,7 @@ p {
   display: block;
   margin-top: 3px;
   color: #a5936a;
-  font: 8px var(--mono);
+  font: 9px var(--mono);
   letter-spacing: 0.11em;
 }
 
@@ -821,19 +821,19 @@ p {
   border: 1px solid #65583d;
   border-radius: 2px;
   color: var(--gold-bright);
-  font: 8px var(--mono);
+  font: 9px var(--mono);
   letter-spacing: 0.05em;
 }
 
 .xp-copy {
   color: #bec2b4;
-  font: 9px var(--mono);
+  font: 10px var(--mono);
 }
 
 .xp-next-label {
   margin-left: auto;
   color: #818b7c;
-  font: 8px var(--mono);
+  font: 9px var(--mono);
   letter-spacing: 0.1em;
 }
 
@@ -849,7 +849,7 @@ p {
 
 .health-heading {
   margin-bottom: 6px;
-  font-size: 8px;
+  font-size: 9px;
 }
 
 .health-heading span:first-child {
@@ -891,7 +891,7 @@ p {
 
 .stat-label {
   color: #859082;
-  font: 7px var(--mono);
+  font: 8px var(--mono);
   letter-spacing: 0.06em;
   white-space: nowrap;
 }
@@ -922,7 +922,7 @@ p {
 .weight-label,
 .mapped-percent {
   color: #899286;
-  font: 8px var(--mono);
+  font: 9px var(--mono);
   letter-spacing: 0.04em;
 }
 
@@ -965,14 +965,14 @@ p {
 
 .equipment-type {
   color: #808a7e;
-  font: 7px var(--mono);
+  font: 8px var(--mono);
   letter-spacing: 0.09em;
 }
 
 .equipment-copy strong {
   overflow: hidden;
   color: #d3d6c9;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 500;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -980,7 +980,7 @@ p {
 
 .equipment-value {
   color: #b4bd9e;
-  font: 8px var(--mono);
+  font: 9px var(--mono);
   white-space: nowrap;
 }
 
@@ -992,7 +992,7 @@ p {
   border: 1px solid #485343;
   border-radius: 9px;
   color: #c8cebd;
-  font: 8px var(--mono);
+  font: 9px var(--mono);
 }
 
 .sort-button {
@@ -1001,7 +1001,7 @@ p {
   background: transparent;
   color: #879184;
   cursor: pointer;
-  font: 8px var(--mono);
+  font: 9px var(--mono);
   letter-spacing: 0.08em;
 }
 
@@ -1052,7 +1052,7 @@ p {
 .inventory-item-copy strong {
   overflow: hidden;
   color: #d8dbcf;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 500;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1060,7 +1060,7 @@ p {
 
 .inventory-item-copy span {
   color: #849082;
-  font-size: 9px;
+  font-size: 10px;
 }
 
 .item-action {
@@ -1070,7 +1070,7 @@ p {
   background: #252e24;
   color: #bec9a8;
   cursor: pointer;
-  font: 7px var(--mono);
+  font: 8px var(--mono);
   letter-spacing: 0.07em;
 }
 
@@ -1082,14 +1082,14 @@ p {
 .inventory-empty {
   margin: 2px 0 6px;
   color: #899386;
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.5;
 }
 
 .inventory-footnote {
   margin: 9px 0 0;
   color: #707c71;
-  font: italic 10px var(--display);
+  font: italic 11px var(--display);
 }
 
 .map-panel {
@@ -1111,7 +1111,7 @@ p {
   justify-content: space-between;
   padding-top: 9px;
   color: #8e988a;
-  font: 7px var(--mono);
+  font: 8px var(--mono);
   letter-spacing: 0.07em;
 }
 
@@ -1155,12 +1155,12 @@ p {
 .quote-card p {
   margin: 0 0 10px;
   color: #b9beae;
-  font: italic 12px/1.55 var(--display);
+  font: italic 13px/1.55 var(--display);
 }
 
 .quote-credit {
   color: #818b7c;
-  font: 7px var(--mono);
+  font: 8px var(--mono);
   letter-spacing: 0.09em;
 }
 
@@ -1171,7 +1171,7 @@ p {
   align-items: center;
   border-top: 1px solid #30382f;
   color: #788275;
-  font: 8px var(--mono);
+  font: 9px var(--mono);
   letter-spacing: 0.1em;
 }
 
@@ -1186,7 +1186,7 @@ p {
 .footer-center .keycap {
   min-width: 14px;
   height: 15px;
-  font-size: 8px;
+  font-size: 9px;
 }
 
 .footer-dot {
@@ -1258,7 +1258,7 @@ p {
 
 .character-modal > .eyebrow {
   color: #b7a376;
-  font-size: 8px;
+  font-size: 9px;
 }
 
 .character-modal h2 {
@@ -1271,14 +1271,14 @@ p {
   max-width: 330px;
   margin: 9px auto 22px;
   color: #a6ad9d;
-  font: 12px/1.6 "DM Sans", sans-serif;
+  font: 13px/1.6 "DM Sans", sans-serif;
 }
 
 .name-label {
   display: block;
   margin-bottom: 7px;
   color: #a5af9f;
-  font: 8px var(--mono);
+  font: 9px var(--mono);
   letter-spacing: 0.12em;
   text-align: left;
 }
@@ -1302,7 +1302,7 @@ p {
   display: none;
   margin: 6px 0 0;
   color: #e09b87;
-  font-size: 10px;
+  font-size: 11px;
   text-align: left;
 }
 
@@ -1358,13 +1358,13 @@ p {
 }
 
 .class-option strong {
-  font: 500 12px var(--display);
+  font: 500 13px var(--display);
 }
 
 .class-description {
   margin-top: 3px;
   color: #929b8d;
-  font-size: 9px;
+  font-size: 10px;
   white-space: nowrap;
 }
 
@@ -1372,7 +1372,7 @@ p {
   margin-top: auto;
   padding-top: 10px;
   color: #c4b17e;
-  font: 7px var(--mono);
+  font: 8px var(--mono);
   white-space: nowrap;
 }
 
@@ -1385,14 +1385,14 @@ p {
 .begin-button {
   width: 100%;
   margin-top: 16px;
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.13em;
 }
 
 .modal-footnote {
   margin: 12px 0 0;
   color: #788477;
-  font: 7px var(--mono);
+  font: 8px var(--mono);
   letter-spacing: 0.09em;
 }
 
@@ -1519,13 +1519,13 @@ p {
 
   .map-topline {
     padding: 0 10px;
-    font-size: 7px;
+    font-size: 8px;
   }
 
   .map-bottomline {
     gap: 9px;
     padding: 0 8px;
-    font-size: 7px;
+    font-size: 8px;
     letter-spacing: 0.04em;
   }
 
@@ -1545,7 +1545,7 @@ p {
   .map-hint {
     bottom: 11px;
     left: 9px;
-    font-size: 7px;
+    font-size: 8px;
   }
 
   .sidebar {
@@ -1585,11 +1585,11 @@ p {
   }
 
   .class-description {
-    font-size: 8px;
+    font-size: 9px;
   }
 
   .class-stats {
-    font-size: 6px;
+    font-size: 7px;
   }
 }
 
