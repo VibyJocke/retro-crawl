@@ -15,7 +15,7 @@ type Archetype = {
 const archetypes: Archetype[] = [
   { name: "Vanguard", vitality: 7, strength: 3, agility: 1, armor: 2 },
   { name: "Scout", vitality: 5, strength: 2, agility: 4, armor: 1 },
-  { name: "Wayfarer", vitality: 6, strength: 3, agility: 2, armor: 1 },
+  { name: "Wayfarer", vitality: 5, strength: 3, agility: 3, armor: 1 },
 ];
 
 const $ = <T extends HTMLElement>(id: string): T => {
@@ -25,6 +25,12 @@ const $ = <T extends HTMLElement>(id: string): T => {
 };
 
 type GameMode = "setup" | "exploring" | "combat" | "stairs" | "dead" | "victory";
+
+type TemporaryEffects = {
+  strength: number;
+  agility: number;
+  armor: number;
+};
 
 const gameState = {
   mode: "setup" as GameMode,
@@ -39,6 +45,7 @@ const gameState = {
   weaponName: "Ironwood blade",
   weaponDamage: 2,
   weaponWeight: 2,
+  temporaryEffects: { strength: 0, agility: 0, armor: 0 } as TemporaryEffects,
   items: [] as Item[],
   monster: null as Monster | null,
   map: null as DungeonMap | null,
@@ -150,6 +157,7 @@ function beginRun(): void {
   gameState.weaponName = "Ironwood blade";
   gameState.weaponDamage = 2;
   gameState.weaponWeight = 2;
+  gameState.temporaryEffects = { strength: 0, agility: 0, armor: 0 };
   gameState.nextItemId = 1;
   gameState.items = [
     { ...items.smallHealingTonic, id: gameState.nextItemId++ },
@@ -185,6 +193,33 @@ function renderFloor(): void {
   setElementText("flavor-text", floorFlavors[gameState.floor - 1]);
 }
 
+function getCarriedWeight(): number {
+  return gameState.items.reduce((total, item) => total + item.weight, gameState.weaponWeight + 1);
+}
+
+function getEncumbranceLimit(): number {
+  return Math.max(1, gameState.archetype.strength * 2);
+}
+
+function getEncumbrancePenalty(): number {
+  const carriedWeight = getCarriedWeight();
+  const limit = getEncumbranceLimit();
+  if (carriedWeight <= limit) return 0;
+  return Math.max(1, Math.ceil((carriedWeight - limit) / 4));
+}
+
+function getEffectiveStrength(): number {
+  return gameState.archetype.strength + gameState.temporaryEffects.strength;
+}
+
+function getEffectiveArmor(): number {
+  return gameState.armor + gameState.temporaryEffects.armor;
+}
+
+function getEffectiveAgility(): number {
+  return Math.max(1, gameState.archetype.agility + gameState.temporaryEffects.agility - getEncumbrancePenalty());
+}
+
 function renderCharacter(): void {
   setElementText("level-number", String(gameState.level).padStart(2, "0"));
   setElementText("xp-current", String(gameState.xp));
@@ -195,15 +230,16 @@ function renderCharacter(): void {
   setElementText("health-label", `${gameState.health} / ${gameState.maxHealth}`);
   $("health-fill").style.width = `${Math.max(0, (gameState.health / gameState.maxHealth) * 100)}%`;
   $("health-fill").classList.toggle("health-low", gameState.health / gameState.maxHealth < 0.35);
-  setElementText("strength-value", String(gameState.archetype.strength));
-  setElementText("agility-value", String(gameState.archetype.agility));
-  setElementText("armor-value", String(gameState.armor));
+  setElementText("strength-value", String(getEffectiveStrength()));
+  setElementText("agility-value", String(getEffectiveAgility()));
+  setElementText("armor-value", String(getEffectiveArmor()));
   setElementText("weapon-name", gameState.weaponName);
   setElementText("weapon-damage", `${gameState.weaponDamage} DMG`);
-  setElementText("armor-defense", `${gameState.armor} DEF`);
-  const carriedWeight = gameState.items.reduce((total, item) => total + item.weight, gameState.weaponWeight + 1);
-  setElementText("weight-label", `${carriedWeight} / ${gameState.archetype.strength * 2} WT`);
-  $("weight-label").classList.toggle("overweight", carriedWeight > gameState.archetype.strength * 2);
+  setElementText("armor-defense", `${getEffectiveArmor()} DEF`);
+  const carriedWeight = getCarriedWeight();
+  const limit = getEncumbranceLimit();
+  setElementText("weight-label", `${carriedWeight} / ${limit} WT`);
+  $("weight-label").classList.toggle("overweight", carriedWeight > limit);
 }
 
 function renderInventory(): void {
@@ -325,7 +361,7 @@ function updateMonsterHealth(): void {
 function attack(): void {
   const monster = gameState.monster;
   if (gameState.mode !== "combat" || !monster) return;
-  const damage = Math.max(1, gameState.archetype.strength + gameState.weaponDamage + Math.floor(Math.random() * 3) - 1);
+  const damage = Math.max(1, getEffectiveStrength() + gameState.weaponDamage + Math.floor(Math.random() * 3) - 1);
   monster.health -= damage;
   log(`You strike ${monster.name} for ${damage} damage.`, "important");
   updateMonsterHealth();
@@ -339,7 +375,15 @@ function attack(): void {
 function monsterAttacks(): void {
   const monster = gameState.monster;
   if (!monster || gameState.mode !== "combat") return;
-  const damage = Math.max(1, monster.damage - gameState.armor);
+
+  const dodgeChance = Math.min(0.75, Math.max(0.08, 0.12 + getEffectiveAgility() * 0.06 - gameState.floor * 0.015));
+  if (Math.random() < dodgeChance) {
+    log(`You dodge ${monster.name}'s attack.`, "success");
+    renderCharacter();
+    return;
+  }
+
+  const damage = Math.max(1, monster.damage - getEffectiveArmor());
   gameState.health = Math.max(0, gameState.health - damage);
   log(`${monster.name} hits you for ${damage} damage.`, "danger");
   renderCharacter();
@@ -372,7 +416,7 @@ function defeatMonster(monster: Monster): void {
     gameState.archetype.vitality++;
     log(`${gameState.name} reaches level ${gameState.level}. You feel stronger.`, "success");
   }
-  if (Math.random() < 0.55) {
+  if (Math.random() < 0.35) {
     const item: Item = { ...randomItemDrop(), id: gameState.nextItemId++ };
     gameState.items.push(item);
     log(`You salvage ${item.name}.`, "success");
@@ -383,10 +427,28 @@ function defeatMonster(monster: Monster): void {
 
 function usePotion(item?: Item): void {
   const potion = item ?? gameState.items.find((candidate) => candidate.kind === "potion");
-  if (!potion || potion.kind !== "potion" || gameState.health === gameState.maxHealth) return;
-  gameState.health = Math.min(gameState.maxHealth, gameState.health + (potion.heal ?? 5));
+  if (!potion || potion.kind !== "potion") return;
+
+  if (potion.effect === "heal") {
+    if (gameState.health === gameState.maxHealth) return;
+    gameState.health = Math.min(gameState.maxHealth, gameState.health + (potion.heal ?? 5));
+    log(`${potion.name} restores your vitality.`, "success");
+  } else if (potion.effect === "rage") {
+    gameState.temporaryEffects.strength += potion.strengthBonus ?? 0;
+    log(`${potion.name} fills you with fury. Your strength rises.`, "success");
+  } else if (potion.effect === "haste") {
+    gameState.temporaryEffects.agility += potion.agilityBonus ?? 0;
+    log(`${potion.name} quickens your steps. Your agility rises.`, "success");
+  } else if (potion.effect === "ward") {
+    gameState.temporaryEffects.armor += potion.armorBonus ?? 0;
+    log(`${potion.name} hardens your stance. Your armor rises.`, "success");
+  } else if (potion.heal) {
+    if (gameState.health === gameState.maxHealth) return;
+    gameState.health = Math.min(gameState.maxHealth, gameState.health + potion.heal);
+    log(`${potion.name} restores your vitality.`, "success");
+  }
+
   gameState.items = gameState.items.filter((candidate) => candidate.id !== potion.id);
-  log(`${potion.name} restores your vitality.`, "success");
   renderCharacter();
   renderInventory();
   if (gameState.mode === "combat") monsterAttacks();
@@ -449,7 +511,7 @@ $("attack-button").addEventListener("click", attack);
 $("potion-button").addEventListener("click", () => usePotion());
 $("flee-button").addEventListener("click", () => {
   if (gameState.mode !== "combat") return;
-  const chance = Math.min(0.8, Math.max(0.2, 0.38 + gameState.archetype.agility * 0.055 - gameState.floor * 0.045));
+  const chance = Math.min(0.8, Math.max(0.2, 0.38 + getEffectiveAgility() * 0.055 - gameState.floor * 0.045));
   if (Math.random() < chance) {
     const escaped = gameState.monster?.name ?? "the creature";
     gameState.monster = null;
