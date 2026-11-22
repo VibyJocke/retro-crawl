@@ -9,6 +9,29 @@ export type Monster = {
   xp: number;
 };
 
+export const namedEncounters = {
+  ashWarden: {
+    name: "The Ashen Knight",
+    kind: "OPTIONAL FLOOR WARDEN",
+    description: "Its rusted oath still binds it to the reliquary.",
+    art: "🛡",
+    health: 25,
+    maxHealth: 25,
+    damage: 6,
+    xp: 95,
+  },
+  hollowKing: {
+    name: "The Hollow King",
+    kind: "LORD OF THE DEEP",
+    description: "The mountain's heart beats beneath its crown of black stone.",
+    art: "👑",
+    health: 38,
+    maxHealth: 38,
+    damage: 8,
+    xp: 180,
+  },
+} satisfies Record<string, Monster>;
+
 export const monstersByFloor: Monster[][] = [
   [
     { name: "Cave snake", kind: "TUNNEL STALKER", description: "It coils in the dust, tasting the air.", art: "🐍", health: 9, maxHealth: 9, damage: 3, xp: 25 },

@@ -22,9 +22,13 @@ npm run build
 
 - Choose a delver name and one of three starting archetypes.
 - Explore a procedurally arranged four-floor dungeon, revealing the map as you go.
+- Search for a concealed room, solve a rune sequence, disarm traps, and unlock caches.
+- Find floor-specific events, choose a shrine blessing, and challenge an optional warden.
 - Fight floor-specific creatures, strike, spend healing tonics, or try to retreat.
 - Gain experience, level up, find supplies, equip a better weapon, and descend.
-- Reach the bottom and return to the surface, or start another run.
+- Defeat the Hollow King at the bottom and return to the surface, or start another run.
 
-Use the arrow keys or WASD to move, Space to attack, and the on-screen controls
-on smaller screens. This prototype does not persist runs between page loads.
+Use the arrow keys or WASD to move, E to interact with nearby features, Space to
+attack, and the on-screen controls on smaller screens. At each descent, choose
+between a safe rest and a risky search for extra loot. This prototype does not
+persist runs between page loads.

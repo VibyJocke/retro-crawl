@@ -1,10 +1,20 @@
 import Phaser from "phaser";
 
 export type Point = { x: number; y: number };
+export type FeatureKind = "secret-door" | "cache" | "trap" | "rune" | "key" | "shrine" | "warden";
+export type DungeonFeature = {
+  id: string;
+  kind: FeatureKind;
+  position: Point;
+  active: boolean;
+  revealed: boolean;
+  order?: number;
+};
 export type DungeonMap = {
   tiles: boolean[][];
   explored: boolean[][];
   visible: boolean[][];
+  features: DungeonFeature[];
   player: Point;
   exit: Point;
   floor: number;
@@ -14,6 +24,7 @@ type SceneCallbacks = {
   onMove: (position: Point) => void;
   onMapChange: (map: DungeonMap) => void;
   onSpace: () => void;
+  onInteract: () => void;
 };
 
 const MAP_WIDTH = 27;
@@ -35,6 +46,7 @@ export class DungeonScene extends Phaser.Scene {
   private tiles: boolean[][] = [];
   private explored: boolean[][] = [];
   private visible: boolean[][] = [];
+  private features: DungeonFeature[] = [];
   private player: Point = { x: 2, y: 2 };
   private exit: Point = { x: MAP_WIDTH - 2, y: MAP_HEIGHT - 2 };
   private floor = 1;
@@ -78,6 +90,9 @@ export class DungeonScene extends Phaser.Scene {
       } else if (event.code === "Space") {
         event.preventDefault();
         this.callbacks.onSpace();
+      } else if (event.code === "KeyE") {
+        event.preventDefault();
+        this.callbacks.onInteract();
       }
     });
     this.buildFloor(1);
@@ -102,6 +117,21 @@ export class DungeonScene extends Phaser.Scene {
     this.paint();
   }
 
+  refresh(): void {
+    this.paint();
+    this.publishMap();
+  }
+
+  openSecretDoor(): void {
+    const door = this.features.find((feature) => feature.kind === "secret-door" && feature.active);
+    if (!door) return;
+    door.active = false;
+    door.revealed = true;
+    this.tiles[door.position.y][door.position.x] = false;
+    this.features.find((feature) => feature.kind === "cache")!.revealed = true;
+    this.refresh();
+  }
+
   buildFloor(floor: number): void {
     this.floor = floor;
     this.tiles = Array.from({ length: MAP_HEIGHT }, (_, y) =>
@@ -110,20 +140,21 @@ export class DungeonScene extends Phaser.Scene {
       ),
     );
 
+    const random = this.seededRandom((this.runSeed + floor * 7919) % 4294967296);
     const verticalWalls = [7, 13, 19];
-    const verticalDoorRows = [2, 8, 14].map((row, index) => row + ((floor + this.runSeed + index) % 2));
     for (const x of verticalWalls) {
       for (let y = 1; y < MAP_HEIGHT - 1; y++) this.tiles[y][x] = true;
-      for (const doorY of verticalDoorRows) {
+      const doorRows = [2, 7, 13].map((row) => row + Math.floor(random() * (row === 2 ? 3 : 4)));
+      for (const doorY of doorRows) {
         this.tiles[doorY][x] = false;
         this.tiles[doorY + 1][x] = false;
       }
     }
 
-    const horizontalDoorColumns = [2, 8, 14, 20].map((column, index) => column + ((floor + this.runSeed + index) % 3));
     for (const y of [6, 12]) {
       for (let x = 1; x < MAP_WIDTH - 1; x++) this.tiles[y][x] = true;
-      for (const doorX of horizontalDoorColumns) {
+      const doorColumns = [2, 8, 14, 20].map((column) => column + Math.floor(random() * 4));
+      for (const doorX of doorColumns) {
         this.tiles[y][doorX] = false;
         this.tiles[y][doorX + 1] = false;
       }
@@ -132,6 +163,8 @@ export class DungeonScene extends Phaser.Scene {
     this.player = { x: 2, y: 2 };
     this.tiles[this.player.y][this.player.x] = false;
     this.addRoomDetails((this.runSeed + floor * 191 + 73) % 4294967296);
+    this.addSecretRoom();
+    this.addFloorFeatures(floor);
     this.exit = this.findFarthestTile(this.player);
     this.explored = Array.from({ length: MAP_HEIGHT }, () =>
       Array<boolean>(MAP_WIDTH).fill(false),
@@ -163,12 +196,77 @@ export class DungeonScene extends Phaser.Scene {
     ];
 
     for (const room of rooms) {
-      const pillars = random() > 0.48 ? 1 : 0;
+      const pillars = Math.floor(random() * 3);
       for (let i = 0; i < pillars; i++) {
         const x = room.x + 1 + Math.floor(random() * (room.w - 2));
         const y = room.y + 1 + Math.floor(random() * (room.h - 2));
         if (x !== this.player.x || y !== this.player.y) this.tiles[y][x] = true;
       }
+    }
+  }
+
+  private addSecretRoom(): void {
+    for (const point of [
+      { x: 4, y: 8 }, { x: 5, y: 8 },
+      { x: 3, y: 9 }, { x: 3, y: 10 },
+      { x: 4, y: 11 }, { x: 5, y: 11 },
+      { x: 6, y: 9 }, { x: 6, y: 10 },
+    ]) {
+      this.tiles[point.y][point.x] = true;
+    }
+    this.tiles[9][4] = false;
+    this.tiles[9][5] = false;
+    this.tiles[10][4] = false;
+    this.tiles[10][5] = false;
+  }
+
+  private addFloorFeatures(floor: number): void {
+    const position = (x: number, y: number): Point => {
+      this.tiles[y][x] = false;
+      for (const [dx, dy] of [[0, -1], [1, 0], [0, 1], [-1, 0]]) {
+        this.tiles[y + dy][x + dx] = false;
+      }
+      return { x, y };
+    };
+    const feature = (id: string, kind: FeatureKind, x: number, y: number, order?: number): DungeonFeature => ({
+      id,
+      kind,
+      position: position(x, y),
+      active: true,
+      revealed: kind !== "secret-door" && kind !== "cache",
+      ...(order === undefined ? {} : { order }),
+    });
+
+    this.features = [
+      {
+        id: "secret-door",
+        kind: "secret-door",
+        position: { x: 3, y: 9 },
+        active: true,
+        revealed: false,
+      },
+      {
+        id: "secret-cache",
+        kind: "cache",
+        position: { x: 5, y: 10 },
+        active: true,
+        revealed: false,
+      },
+      feature("trap", "trap", 15, 4),
+    ];
+
+    if (floor === 1) {
+      this.features.push(
+        feature("rune-1", "rune", 10, 3, 1),
+        feature("rune-2", "rune", 16, 9, 2),
+        feature("rune-3", "rune", 22, 15, 3),
+      );
+    } else if (floor === 2) {
+      this.features.push(feature("gallery-key", "key", 10, 15), feature("sunken-shrine", "shrine", 16, 9));
+    } else if (floor === 3) {
+      this.features.push(feature("ash-warden", "warden", 22, 15));
+    } else {
+      this.features.push(feature("deep-key", "key", 10, 15));
     }
   }
 
@@ -208,7 +306,10 @@ export class DungeonScene extends Phaser.Scene {
         }
         distances.set(key, distances.get(`${point.x},${point.y}`)! + 1);
         queue.push(next);
-        if (distances.get(key)! > distances.get(`${farthest.x},${farthest.y}`)!) {
+        const isFeatureTile = this.features.some((feature) =>
+          feature.position.x === next.x && feature.position.y === next.y,
+        );
+        if (!isFeatureTile && distances.get(key)! > distances.get(`${farthest.x},${farthest.y}`)!) {
           farthest = next;
         }
       }
@@ -245,6 +346,7 @@ export class DungeonScene extends Phaser.Scene {
       tiles: this.tiles,
       explored: this.explored,
       visible: this.visible,
+      features: this.features,
       player: { ...this.player },
       exit: { ...this.exit },
       floor: this.floor,
@@ -302,7 +404,53 @@ export class DungeonScene extends Phaser.Scene {
     }
 
     if (this.explored[this.exit.y]?.[this.exit.x]) this.paintExit();
+    this.paintFeatures();
     this.paintPlayer();
+  }
+
+  private paintFeatures(): void {
+    const g = this.graphics;
+    for (const feature of this.features) {
+      const { x, y } = feature.position;
+      if (!feature.active || !feature.revealed || !this.explored[y]?.[x]) continue;
+      const cx = this.px(x) + this.tileSize / 2;
+      const cy = this.py(y) + this.tileSize / 2;
+      const radius = this.tileSize * 0.26;
+      const color = feature.kind === "trap" ? 0xd78070
+        : feature.kind === "rune" || feature.kind === "shrine" ? 0x8bc4bb
+          : feature.kind === "warden" ? 0xd96e59
+            : 0xe2bb70;
+      g.fillStyle(0x101715, 0.9);
+      g.fillCircle(cx, cy, radius * 1.25);
+      g.lineStyle(Math.max(2, this.tileSize * 0.07), color, 0.95);
+      if (feature.kind === "trap") {
+        g.beginPath();
+        g.moveTo(cx, cy - radius);
+        g.lineTo(cx + radius, cy + radius);
+        g.lineTo(cx - radius, cy + radius);
+        g.closePath();
+        g.strokePath();
+      } else if (feature.kind === "cache" || feature.kind === "secret-door" || feature.kind === "key") {
+        g.strokeRect(cx - radius * 0.75, cy - radius * 0.75, radius * 1.5, radius * 1.5);
+      } else {
+        g.strokeCircle(cx, cy, radius);
+        if (feature.kind === "rune" && feature.order === 1) {
+          g.lineBetween(cx, cy - radius * 0.5, cx, cy + radius * 0.5);
+          g.lineBetween(cx - radius * 0.3, cy + radius * 0.5, cx + radius * 0.3, cy + radius * 0.5);
+        } else if (feature.kind === "rune" && feature.order === 2) {
+          g.lineBetween(cx - radius * 0.4, cy - radius * 0.4, cx + radius * 0.4, cy - radius * 0.4);
+          g.lineBetween(cx + radius * 0.4, cy - radius * 0.4, cx - radius * 0.4, cy + radius * 0.4);
+          g.lineBetween(cx - radius * 0.4, cy + radius * 0.4, cx + radius * 0.4, cy + radius * 0.4);
+        } else if (feature.kind === "rune" && feature.order === 3) {
+          g.lineBetween(cx - radius * 0.4, cy - radius * 0.4, cx + radius * 0.4, cy - radius * 0.4);
+          g.lineBetween(cx - radius * 0.4, cy, cx + radius * 0.4, cy);
+          g.lineBetween(cx - radius * 0.4, cy + radius * 0.4, cx + radius * 0.4, cy + radius * 0.4);
+        } else {
+          g.lineBetween(cx - radius * 0.55, cy, cx + radius * 0.55, cy);
+          g.lineBetween(cx, cy - radius * 0.55, cx, cy + radius * 0.55);
+        }
+      }
+    }
   }
 
   private paintExit(): void {

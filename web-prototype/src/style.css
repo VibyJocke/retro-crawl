@@ -301,6 +301,48 @@ p {
   pointer-events: none;
 }
 
+.context-hint {
+  position: absolute;
+  z-index: 3;
+  top: 13px;
+  left: 50%;
+  display: none;
+  max-width: calc(100% - 150px);
+  padding: 8px 11px;
+  transform: translateX(-50%);
+  border: 1px solid #637259;
+  border-radius: 3px;
+  background: #18211de8;
+  color: #e4d29e;
+  font: 10px var(--mono);
+  text-align: center;
+  pointer-events: none;
+}
+
+.context-hint.is-visible {
+  display: block;
+}
+
+.interact-button {
+  position: absolute;
+  z-index: 3;
+  right: 12px;
+  bottom: 101px;
+  display: none;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid #7d7651;
+  border-radius: 3px;
+  background: #252b20e8;
+  color: var(--gold-bright);
+  cursor: pointer;
+  font: 9px var(--mono);
+}
+
+.context-hint.is-visible ~ .interact-button {
+  display: block;
+}
+
 .keycap {
   display: inline-grid;
   min-width: 16px;
@@ -379,7 +421,8 @@ p {
 
 .battle-card,
 .stairs-card,
-.end-card {
+.end-card,
+.event-card {
   position: absolute;
   z-index: 4;
   top: 50%;
@@ -445,7 +488,8 @@ p {
 
 .battle-card h2,
 .stairs-card h2,
-.end-card h2 {
+.end-card h2,
+.event-card h2 {
   margin: 0;
   color: #f0ecda;
   font: 500 24px var(--display);
@@ -577,7 +621,8 @@ p {
 }
 
 .stairs-card,
-.end-card {
+.end-card,
+.event-card {
   width: min(370px, calc(100% - 34px));
   padding: 28px 30px;
 }
@@ -603,8 +648,24 @@ p {
 }
 
 .stairs-card .button,
-.end-card .button {
+.end-card .button,
+.event-card .button {
   min-width: 180px;
+}
+
+.stairs-card #relic-button {
+  margin-top: 8px;
+}
+
+.event-card > p:not(.eyebrow) {
+  margin: 10px 0 18px;
+  color: #a6ad9e;
+  font: 13px/1.6 "DM Sans", sans-serif;
+}
+
+.event-actions {
+  display: grid;
+  gap: 8px;
 }
 
 .end-sigil {

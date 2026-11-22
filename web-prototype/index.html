@@ -45,9 +45,11 @@
               <div id="game" aria-label="Dungeon map. Move with arrow keys or WASD."></div>
               <div class="map-vignette" aria-hidden="true"></div>
               <div class="map-hint"><span class="keycap">W</span><span class="keycap">A</span><span class="keycap">S</span><span class="keycap">D</span><span class="hint-separator"></span> TO MOVE</div>
+              <div id="context-hint" class="context-hint" aria-live="polite"></div>
+              <button id="interact-button" class="interact-button" type="button">INTERACT</button>
 
               <section id="battle-card" class="battle-card is-hidden" aria-live="polite">
-                <div class="battle-topline"><span class="battle-kicker"><span class="live-dot danger"></span> HOSTILE ENCOUNTER</span><span id="battle-floor" class="battle-floor">FLOOR 01</span></div>
+                <div class="battle-topline"><span class="battle-kicker"><span class="live-dot danger"></span> <span id="battle-kicker">HOSTILE ENCOUNTER</span></span><span id="battle-floor" class="battle-floor">FLOOR 01</span></div>
                 <div class="monster-art" id="monster-art" aria-hidden="true">🐍</div>
                 <p id="monster-kind" class="monster-kind">A DANGEROUS CREATURE</p>
                 <h2 id="monster-name">Cave snake</h2>
@@ -68,6 +70,17 @@
                 <h2 id="stairs-title">The stone gives way</h2>
                 <p id="stairs-copy">A stairwell winds deeper into the dark.</p>
                 <button id="descend-button" class="button button-primary" type="button">Descend <span aria-hidden="true">→</span></button>
+                <button id="relic-button" class="button button-secondary is-hidden" type="button">Search the rubble <span aria-hidden="true">✦</span></button>
+              </section>
+
+              <section id="event-card" class="event-card is-hidden" aria-live="polite">
+                <p class="eyebrow">A MOMENT OF CHOICE</p>
+                <h2 id="event-title">The drowned shrine</h2>
+                <p id="event-copy"></p>
+                <div class="event-actions">
+                  <button id="event-choice-a" class="button button-primary" type="button"></button>
+                  <button id="event-choice-b" class="button button-secondary" type="button"></button>
+                </div>
               </section>
 
               <section id="end-card" class="end-card is-hidden" aria-live="polite">
